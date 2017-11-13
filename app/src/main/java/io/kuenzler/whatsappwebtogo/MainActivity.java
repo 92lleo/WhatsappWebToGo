@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             try {
                                 Thread.sleep(100);
                             } catch (Exception e) {
-                                Log.d("WAWEB", e.getMessage());
+                                Log.d(DEBUG_TAG, e.getMessage());
                             }
                             MainActivity.this.runOnUiThread(() -> {
                                 webView.invalidate();
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 try {
                                     Thread.sleep(100);
                                 } catch (InterruptedException e) {
-                                    Log.d("WAWEB", e.getMessage());
+                                    Log.d(DEBUG_TAG, e.getMessage());
                                 }
                                 webView.zoomOut();
                                 webView.invalidate();
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             public boolean onConsoleMessage(ConsoleMessage cm) {
                 Log.d(DEBUG_TAG, "WebView console message: " + cm.message());
-                return false;
+                return super.onConsoleMessage(cm);
             }
 
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -219,23 +219,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //        "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
             }
 
-            //public WebResourceResponse shouldInterceptRequest(final WebView view, String url) {
-            //    Log.d("URL2", url);
-            //    if (url.equals("https://web.whatsapp.com/assets/0a598282e94e87dea63e466d115e4a83.mp3")) {
-            //        showToast("bling");
-            //    }
-            //    return super.shouldInterceptRequest(view, url);
-            //}
 
-            //public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            //    // this does not work
-            //    Log.d("URL", url);
-            //    if (url.equals("https://web.whatsapp.com/assets/0a598282e94e87dea63e466d115e4a83.mp3")) {
-            //        showToast("no sound!");
-            //        return true;
-            //    }
-            //    return super.shouldOverrideUrlLoading(view, url);
-            //}
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                //whatsapp sound:
+                // url.equals("https://web.whatsapp.com/assets/0a598282e94e87dea63e466d115e4a83.mp3"
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    if (request.getUrl().toString().contains("web.whatsapp.com")) {
+                        return false;
+                    } else {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
+                        startActivity(intent);
+                    }
+                    return true;
+                }
+                return super.shouldOverrideUrlLoading(view, request);
+            }
+
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    if (url.contains("web.whatsapp.com")) {
+                        return false;
+                    } else {
+                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(i);
+                    }
+                    return true;
+                }
+                return super.shouldOverrideUrlLoading(view, url);
+            }
 
             @RequiresApi(api = Build.VERSION_CODES.M)
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
@@ -244,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
-                //do stuff
+                Log.d(DEBUG_TAG, "Unhandled key event: " + event.toString());
             }
         });
 
@@ -323,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("WhatsappWeb To Go\n\nby Leonhard Künzler\n" +
                 "leonhard@kuenzler.io\n\ngithub.com/92lleo/WhatsappWebToGo\n\n" +
-                "(c)2017\n\nv0.6.1")
+                "(c)2017\n\nv0.6.2")
                 .setCancelable(false)
                 .setPositiveButton("Ok", null);
         AlertDialog alert = builder.create();
