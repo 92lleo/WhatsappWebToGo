@@ -140,24 +140,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (request.getResources()[0].equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
                     if (ContextCompat.checkSelfPermission(activity, CAMERA_PERMISSION) == PackageManager.PERMISSION_GRANTED) {
                         request.grant(request.getResources());
-                        new Thread(() -> {
-                            try {
-                                Thread.sleep(100);
-                            } catch (Exception e) {
-                                Log.d(DEBUG_TAG, e.getMessage());
-                            }
-                            MainActivity.this.runOnUiThread(() -> {
-                                webView.invalidate();
-                                webView.zoomIn();
-                                try {
-                                    Thread.sleep(100);
-                                } catch (InterruptedException e) {
-                                    Log.d(DEBUG_TAG, e.getMessage());
-                                }
-                                webView.zoomOut();
-                                webView.invalidate();
-                            });
-                        }).start();
                     } else {
                         ActivityCompat.requestPermissions(activity, new String[]{CAMERA_PERMISSION}, CAMERA_PERMISSION_RESULTCODE);
                         currentPermissionRequest = request;
