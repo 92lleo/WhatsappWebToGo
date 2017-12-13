@@ -79,12 +79,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String CAMERA_PERMISSION = "android.permission.CAMERA";
     private static final String AUDIO_PERMISSION = "android.permission.RECORD_AUDIO";
+    private static final String[] VIDEO_PERMISSION = {CAMERA_PERMISSION, AUDIO_PERMISSION};
 
     private static final String WHATSAPP_WEB_URL = "https://web.whatsapp.com";
 
     private static final int FILECHOOSER_RESULTCODE = 200;
     private static final int CAMERA_PERMISSION_RESULTCODE = 201;
     private static final int AUDIO_PERMISSION_RESULTCODE = 202;
+    private static final int VIDEO_PERMISSION_RESULTCODE = 203;
 
     private static final String DEBUG_TAG = "WAWEBTOGO";
 
@@ -138,11 +140,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onPermissionRequest(final PermissionRequest request) {
                 if (request.getResources()[0].equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
-                    if (ContextCompat.checkSelfPermission(activity, CAMERA_PERMISSION) == PackageManager.PERMISSION_GRANTED) {
-                        request.grant(request.getResources());
-                    } else {
+                    if (ContextCompat.checkSelfPermission(activity, CAMERA_PERMISSION) == PackageManager.PERMISSION_DENIED
+                            && ContextCompat.checkSelfPermission(activity, AUDIO_PERMISSION) == PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(activity, new String[]{CAMERA_PERMISSION, AUDIO_PERMISSION}, VIDEO_PERMISSION_RESULTCODE);
+                        currentPermissionRequest = request;
+                    } else if (ContextCompat.checkSelfPermission(activity, CAMERA_PERMISSION) == PackageManager.PERMISSION_DENIED) {
                         ActivityCompat.requestPermissions(activity, new String[]{CAMERA_PERMISSION}, CAMERA_PERMISSION_RESULTCODE);
                         currentPermissionRequest = request;
+                    } else if (ContextCompat.checkSelfPermission(activity, AUDIO_PERMISSION) == PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(activity, new String[]{AUDIO_PERMISSION}, AUDIO_PERMISSION_RESULTCODE);
+                        currentPermissionRequest = request;
+                    } else {
+                        request.grant(request.getResources());
                     }
                 } else if (request.getResources()[0].equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
                     if (ContextCompat.checkSelfPermission(activity, AUDIO_PERMISSION) == PackageManager.PERMISSION_GRANTED) {
@@ -269,11 +278,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
+            case VIDEO_PERMISSION_RESULTCODE:
+                if (permissions.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    try {
+                        currentPermissionRequest.grant(currentPermissionRequest.getResources());
+                    } catch (RuntimeException e) {
+                        Log.e(DEBUG_TAG, "Granting permissions failed", e);
+                    }
+                } else {
+                    showSnackbar("Permission not granted, can't use video.");
+                    currentPermissionRequest.deny();
+                }
+                break;
             case CAMERA_PERMISSION_RESULTCODE:
             case AUDIO_PERMISSION_RESULTCODE:
                 //same same
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    currentPermissionRequest.grant(currentPermissionRequest.getResources());
                 } else {
                     showSnackbar("Permission not granted, can't use " + (requestCode == CAMERA_PERMISSION_RESULTCODE ? "camera" : "microphone"));
                     currentPermissionRequest.deny();
@@ -282,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 Log.d(DEBUG_TAG, "Got permission result with unknown request code " + requestCode + " - " + Arrays.asList(permissions).toString());
         }
+        currentPermissionRequest = null;
     }
 
     @Override
