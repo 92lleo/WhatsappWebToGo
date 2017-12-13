@@ -161,8 +161,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         currentPermissionRequest = request;
                     }
                 } else {
-                    showToast(request.toString());
-                    request.grant(request.getResources());
+                    try {
+                        request.grant(request.getResources());
+                    } catch (RuntimeException e) {
+                        Log.d(DEBUG_TAG, "Granting permissions failed", e);
+                    }
                 }
             }
 
@@ -294,6 +297,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case AUDIO_PERMISSION_RESULTCODE:
                 //same same
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    try {
+                        currentPermissionRequest.grant(currentPermissionRequest.getResources());
+                    } catch (RuntimeException e) {
+                        Log.e(DEBUG_TAG, "Granting permissions failed", e);
+                    }
                 } else {
                     showSnackbar("Permission not granted, can't use " + (requestCode == CAMERA_PERMISSION_RESULTCODE ? "camera" : "microphone"));
                     currentPermissionRequest.deny();
