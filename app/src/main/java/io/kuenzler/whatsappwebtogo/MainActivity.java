@@ -20,9 +20,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // private static final String js = "function wrapFunc(name) {alert('works!); if (typeof window[name] == 'function') {var original = window['__' + name] = window[name]; window[name] = function() { var result = original.apply(this, arguments); Interceptor.reportCall(name, result.toString()); return result; } alert('yes'); } else { alert('no'); }}";
     // private static final String audioJs = "javascript:window.onload=function(){var n=document.getElementsByTagName(\"audio\"),r=n.length;for(var o=0;o<r;o++)n[o].setAttribute(\"index\",o),n[o].addEventListener(\"ended\",function(){for(var e=0;e<r;e++)this===n[e]&&window.external.setEndedIndex(e)})}";
-
+    
     private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
     private static final String chrome = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
@@ -85,6 +89,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String DEBUG_TAG = "WAWEBTOGO";
 
     private WebView webView;
+    private ViewGroup mainView;
+
+    private long lastTouchClick = 0;
+    private long lastBackClick = 0;
+    private float lastXClick = 0;
+    private float lastYClick = 0;
+
     private final Activity activity = this;
 
     private ValueCallback<Uri[]> mUploadMessage;
@@ -109,7 +120,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
+        mainView = findViewById(R.id.layout);
         webView = findViewById(R.id.webview);
+
         webView.getSettings().setJavaScriptEnabled(true); //for wa web
 
         webView.getSettings().setAllowContentAccess(true); // for camera
@@ -257,18 +270,65 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             Log.d(DEBUG_TAG, "savedInstanceState is present");
         }
+
+        webView.setOnTouchListener((View v, MotionEvent event) -> {
+            if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS && event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (System.currentTimeMillis() - lastTouchClick < 1300) {
+                    if (Math.abs(event.getY() - webView.getHeight()) < 110 &&
+                            Math.abs(lastXClick - event.getX()) < 180 && Math.abs(lastYClick - event.getY()) < 110) {
+                        showSnackbar("Use the keyboard button on top to type");
+                        lastTouchClick = 0;
+                    } else {
+                        lastTouchClick = System.currentTimeMillis();
+                        lastXClick = event.getX();
+                        lastYClick = event.getY();
+                    }
+                } else {
+                    lastTouchClick = System.currentTimeMillis();
+                    lastXClick = event.getX();
+                    lastYClick = event.getY();
+                }
+            }
+            return false;
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         webView.onResume();
+        mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         webView.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.toggle_keyboard:
+                toggleKeyboard();
+                break;
+            case R.id.scroll_left:
+                showToast("scroll left");
+                runOnUiThread(() -> webView.scrollTo(0, 0));
+                break;
+            case R.id.scroll_right:
+                showToast("scroll right");
+                runOnUiThread(() -> webView.scrollTo(2000, 0));
+                break;
+        }
+        return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -359,14 +419,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    private void toggleKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
+            mainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+            showSnackbar("Unblocking keyboard...");
+            //inputMethodManager.showSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
+        } else {
+            mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            webView.getRootView().requestFocus();
+            showSnackbar("Blocking keyboard...");
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
     @Override
     public void onBackPressed() {
-        //close drawer if open
+        //close drawer if open and impl. press back again to leave
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (System.currentTimeMillis() - lastBackClick < 1100) {
+            finishAffinity();
         } else {
-            super.onBackPressed();
+            showToast("Click back again to close");
+            lastBackClick = System.currentTimeMillis();
         }
     }
 
