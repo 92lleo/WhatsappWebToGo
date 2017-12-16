@@ -272,10 +272,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         webView.setOnTouchListener((View v, MotionEvent event) -> {
-            if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS && event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS
+                    && event.getAction() == MotionEvent.ACTION_DOWN
+                    && Math.abs(event.getY() - webView.getHeight()) < 160) {
                 if (System.currentTimeMillis() - lastTouchClick < 1300) {
-                    if (Math.abs(event.getY() - webView.getHeight()) < 110 &&
-                            Math.abs(lastXClick - event.getX()) < 180 && Math.abs(lastYClick - event.getY()) < 110) {
+                    if (Math.abs(lastXClick - event.getX()) < 180) {
                         showSnackbar("Use the keyboard button on top to type");
                         lastTouchClick = 0;
                     } else {
