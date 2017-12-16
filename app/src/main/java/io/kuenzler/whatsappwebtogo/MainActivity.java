@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         webView.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
                 view.scrollTo(0, 0);
+                showSnackbar("Unblock keyboard with the keyboard button on top");
 
                 // inject wrapper
                 // don't forget to remove newline chars
@@ -299,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         webView.onResume();
         mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        showSnackbar("Unblock keyboard with the keyboard button on top");
     }
 
     @Override
