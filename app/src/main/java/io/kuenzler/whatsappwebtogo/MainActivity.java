@@ -278,8 +278,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         webView.setOnTouchListener((View v, MotionEvent event) -> {
+            if(event.getAction() == MotionEvent.ACTION_MOVE){
+                return false;
+            }
             if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS
-                    && event.getAction() == MotionEvent.ACTION_DOWN
+                    && event.getAction() == MotionEvent.ACTION_UP
                     && Math.abs(event.getY() - webView.getHeight()) < 160) {
                 if (System.currentTimeMillis() - lastTouchClick < 1300) {
                     if (Math.abs(lastXClick - event.getX()) < 180) {
