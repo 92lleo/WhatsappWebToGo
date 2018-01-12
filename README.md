@@ -13,5 +13,7 @@ With a clean and easy interface it's fun to use - it even shows up as running on
 
 This is a beta, if you have problems just send a mail, create a github issue or use the private google play beta feedback
 
+This was initially a proof of concept to try some things with the android webview. The app design is bad, i'll refactor it for 1.0
+
 This app is in no way affiliated with WhatsApp Inc. The rights for WhatsApp and WhatsApp Web belong to WhatsApp Inc. 
 This app is a private project to enable the use of WhatsApp Web on Android Devices
