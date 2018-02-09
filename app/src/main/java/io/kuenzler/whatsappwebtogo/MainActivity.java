@@ -43,19 +43,9 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    //private static final String js = "function wrapFunc(name) {" +
-    //        "if(typeof window[name] == 'function') {" +
-    //        "var original = window['__' + name] = window[name];" +
-    //       "window[name] = function() {  // and replace with wrapper" +
-    //       "var result = original.apply(this, arguments);" +
-    //       "Interceptor.reportCall(name, result.toString());" +
-    //      "return result;" +
-    //       "} alert('hallo'); } else {alert('hallo')}" +
-    //      "}";
 
     // private static final String js = "function wrapFunc(name) {alert('works!); if (typeof window[name] == 'function') {var original = window['__' + name] = window[name]; window[name] = function() { var result = original.apply(this, arguments); Interceptor.reportCall(name, result.toString()); return result; } alert('yes'); } else { alert('no'); }}";
-    // private static final String audioJs = "javascript:window.onload=function(){var n=document.getElementsByTagName(\"audio\"),r=n.length;for(var o=0;o<r;o++)n[o].setAttribute(\"index\",o),n[o].addEventListener(\"ended\",function(){for(var e=0;e<r;e++)this===n[e]&&window.external.setEndedIndex(e)})}";
-    
+
     private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
     private static final String chrome = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
