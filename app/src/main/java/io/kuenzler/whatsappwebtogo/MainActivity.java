@@ -254,6 +254,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        webView.setDownloadListener((String url, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
+            //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+            //for downloading directly through download manager
+
+            showToast("Downloading is not supported yet.");
+
+            /*
+            url = url.replace("blob:", "");
+            DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            execute("asdf", Uri.parse(url));
+            Log.d(DEBUG_TAG, url);
+            if(dm == null){
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+            } else {
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                String filename = URLUtil.guessFileName(url, contentDisposition, mimetype);
+                filename = "WhatsApp_" + filename;
+                request.allowScanningByMediaScanner();
+                request.setMimeType(mimetype);
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "WhatsappWebToGo/"+filename);
+                request.setTitle(filename);
+                request.setDescription("Downloading from WhatsApp Web To Go");
+
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        //permission granted
+                    } else {
+                        ActivityCompat.requestPermissions(this, new String[]{STORAGE_PERMISSION}, STORAGE_PERMISSION_RESULTCODE);
+                    }
+                }
+
+                dm.enqueue(request);
+
+            } */
+        });
+
         // webView.addJavascriptInterface(new NotificationInterface(this), "Android");
         // webView.addJavascriptInterface(new FunctionCallInterceptor(), "Interceptor");
 
