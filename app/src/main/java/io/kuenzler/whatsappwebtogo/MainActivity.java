@@ -2,9 +2,7 @@ package io.kuenzler.whatsappwebtogo;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -82,9 +80,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String[] VIDEO_PERMISSION = {CAMERA_PERMISSION, AUDIO_PERMISSION};
 
     private static final String WHATSAPP_WEB_URL = "https://web.whatsapp.com";
-
-    private static final String WEBVIEW_PACKAGE = "com.google.android.webview";
-    private static final String[] NOUGAT_WEBVIEW_PACKAGES = {WEBVIEW_PACKAGE, "com.android.chrome", "com.chrome.beta", "com.chrome.canary", "com.chrome.dev"};
 
     private static final int FILECHOOSER_RESULTCODE = 200;
     private static final int CAMERA_PERMISSION_RESULTCODE = 201;
@@ -307,7 +302,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         webView.onResume();
-        checkWebviewInstallation();
         mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         showSnackbar("Unblock keyboard with the keyboard button on top");
     }
@@ -406,62 +400,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 Log.d(DEBUG_TAG, "Got activity result with unknown request code " + requestCode + " - " + data.toString());
         }
-    }
-
-    private void checkWebviewInstallation() {
-        boolean promtForWebview = false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //oreo has static getter for webview package
-            PackageInfo webViewPackageInfo = WebView.getCurrentWebViewPackage();
-            promtForWebview = (webViewPackageInfo == null);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            //Nougat can choose between webview and chrome
-            boolean webviewFound = false;
-            for (String webviewPackage : NOUGAT_WEBVIEW_PACKAGES) {
-                try {
-                    getPackageManager().getPackageInfo(webviewPackage, 0);
-                    webviewFound = true;
-                } catch (PackageManager.NameNotFoundException e) {
-                    //ignore
-                }
-            }
-            promtForWebview = !webviewFound;
-        } else {
-            // all below nougat: only webview counts
-            try {
-                getPackageManager().getPackageInfo(WEBVIEW_PACKAGE, 0);
-            } catch (PackageManager.NameNotFoundException | IllegalArgumentException e) {
-                promtForWebview = true;
-            }
-        }
-
-        if (!promtForWebview) {
-            return;
-        }
-
-        DialogInterface.OnClickListener dialogClickListener = (DialogInterface dialog, int which) -> {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    //Yes button clicked
-                    try {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + WEBVIEW_PACKAGE)));
-                    } catch (android.content.ActivityNotFoundException e) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + WEBVIEW_PACKAGE)));
-                    }
-                    showToast("Please install WebView and restart Whatsapp Web To Go");
-                    activity.finish();
-                    break;
-                case DialogInterface.BUTTON_NEGATIVE:
-                    dialog.dismiss();
-                    break;
-            }
-        };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage("For this app to work properly, Android WebView has to be installed and up to date. " +
-                "Would you like to install/update it now?\nIf you select no, you may experience problems.")
-                .setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();
     }
 
     private void showAbout() {
