@@ -1,5 +1,6 @@
 package io.kuenzler.whatsappwebtogo;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -65,8 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String device = androidCurrent;
     private static final String userAgent = "Mozilla/5.0 (" + device + ") " + browser;
 
-    private static final String CAMERA_PERMISSION = "android.permission.CAMERA";
-    private static final String AUDIO_PERMISSION = "android.permission.RECORD_AUDIO";
+    private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA";
+    private static final String AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO; // "android.permission.RECORD_AUDIO";
+    private static final String STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE; //android.permission.WRITE_EXTERNAL_STORAGE
     private static final String[] VIDEO_PERMISSION = {CAMERA_PERMISSION, AUDIO_PERMISSION};
 
     private static final String WHATSAPP_WEB_URL = "https://web.whatsapp.com";
