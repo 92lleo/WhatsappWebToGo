@@ -3,11 +3,14 @@ package io.kuenzler.whatsappwebtogo;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -29,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
+import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -40,6 +44,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -80,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int CAMERA_PERMISSION_RESULTCODE = 201;
     private static final int AUDIO_PERMISSION_RESULTCODE = 202;
     private static final int VIDEO_PERMISSION_RESULTCODE = 203;
+    private static final int STORAGE_PERMISSION_RESULTCODE = 204;
 
     private static final String DEBUG_TAG = "WAWEBTOGO";
 
@@ -227,7 +235,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 //whatsapp sound:
                 // url.equals("https://web.whatsapp.com/assets/0a598282e94e87dea63e466d115e4a83.mp3"
+
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    Log.d(DEBUG_TAG, request.getUrl().toString());
                     if (request.getUrl().toString().contains("web.whatsapp.com")) {
                         return false;
                     } else {
@@ -240,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.d(DEBUG_TAG, url);
                 if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
                     if (url.contains("web.whatsapp.com")) {
                         return false;
@@ -449,6 +460,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     currentPermissionRequest.deny();
                 }
                 break;
+            case STORAGE_PERMISSION_RESULTCODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // TODO: check for current download and enqueue it
+                } else {
+                    showSnackbar("Permission not granted, can't download to storage");
+                }
+                break;
             default:
                 Log.d(DEBUG_TAG, "Got permission result with unknown request code " + requestCode + " - " + Arrays.asList(permissions).toString());
         }
@@ -583,6 +601,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //  walk(new File(getApplicationContext().getDataDir().toString() + "/app_webview/"));
             // }
         } else if (id == R.id.nav_about) {
+            File[] files = {getApplicationContext().getFilesDir()};
+             //showFiles(files);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                File[] files2 = {new File(getApplicationContext().getDataDir().toString())}; // + "/app_webview/")};
+                showFiles(files2);
+            }
             showAbout();
         } else if (id == R.id.nav_reload) {
             showSnackbar("reloading...");
@@ -593,6 +617,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public static void showFiles(File[] files) {
+        for (File file : files) {
+            if (file.isDirectory()) {
+                Log.d(DEBUG_TAG, "Directory: " + file.getName());
+                showFiles(file.listFiles()); // Calls same method again.
+            } else {
+                Log.d(DEBUG_TAG,"File: " + file.getName());
+            }
+        }
+    }
+
+
 
     // JS stuff
     /*
