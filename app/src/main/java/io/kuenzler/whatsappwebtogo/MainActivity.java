@@ -88,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private float lastXClick = 0;
     private float lastYClick = 0;
 
+    boolean keyboardEnabled = false;
+    Toast clickReminder = null;
+
     private final Activity activity = this;
 
     private ValueCallback<Uri[]> mUploadMessage;
@@ -185,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         webView.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
                 view.scrollTo(0, 0);
-                showSnackbar("Unblock keyboard with the keyboard button on top");
+               // showSnackbar("Unblock keyboard with the keyboard button on top");
 
                 // inject wrapper
                 // don't forget to remove newline chars
@@ -211,6 +214,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 //webView.loadUrl("javascript:window.Interceptor.showHTML" +
                 //        "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
+                webView.loadUrl(listenerJS);
+                webView.evaluateJavascript(listenerJS, null);
             }
 
 
@@ -294,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         // webView.addJavascriptInterface(new NotificationInterface(this), "Android");
-        // webView.addJavascriptInterface(new FunctionCallInterceptor(), "Interceptor");
+        webView.addJavascriptInterface(new TextfieldClickInterface(), "TFCLI");
 
         webView.getSettings().setUserAgentString(userAgent);
         if (savedInstanceState == null) {
@@ -303,12 +309,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.d(DEBUG_TAG, "savedInstanceState is present");
         }
 
+        webView.loadUrl(listenerJS);
+        webView.evaluateJavascript(listenerJS, null);
+
         webView.setOnTouchListener((View v, MotionEvent event) -> {
-            if(event.getAction() == MotionEvent.ACTION_MOVE){
-                return false;
+            if(clickReminder!= null){
+                clickReminder.cancel();
+                clickReminder = null;
             }
+            lastTouchClick = System.currentTimeMillis();
+            lastXClick = event.getX();
+            lastYClick = event.getY();
+            return false;
+            /*
             if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS
-                    && event.getAction() == MotionEvent.ACTION_UP
+                    && event.getAction() == MotionEvent.ACTION_DOWN
                     && Math.abs(event.getY() - webView.getHeight()) < 160) {
                 if (System.currentTimeMillis() - lastTouchClick < 1300) {
                     if (Math.abs(lastXClick - event.getX()) < 180) {
@@ -325,8 +340,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     lastYClick = event.getY();
                 }
             }
-            return false;
+            return false; */
         });
+    }
+
+
+    public int execute(String filename, Uri blobUri) {
+
+        int success = 1;
+
+        try {
+            ContentResolver resolver = getContentResolver();
+            InputStream is = resolver.openInputStream(blobUri);
+
+            Log.d(DEBUG_TAG, Environment.DIRECTORY_DOWNLOADS+"/test.jpg");
+            File blobFile = new File(Environment.DIRECTORY_DOWNLOADS+"/test.jpg");
+            FileOutputStream outStream = new FileOutputStream(blobFile);
+
+            int length = -1;
+            int size = 4096;
+            byte[] buffer = new byte[size];
+
+            while ((length = is.read(buffer)) != -1) {
+                outStream.write(buffer, 0, length);
+                outStream.flush();
+            }
+
+            is.close();
+            outStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(DEBUG_TAG, "ERROR(djv_exportBlob) Unable to export:" + filename);
+            success = 0;
+        } finally {
+            return success;
+        }
     }
 
     @Override
@@ -334,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         webView.onResume();
         mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        showSnackbar("Unblock keyboard with the keyboard button on top");
+        //showSnackbar("Unblock keyboard with the keyboard button on top");
     }
 
     @Override
@@ -470,6 +518,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void setKeyboardEnabled(boolean enable){
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (enable && mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
+            mainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+            //showSnackbar("Unblocking keyboard...");
+            //inputMethodManager.showSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
+        } else if (!enable) {
+            mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            webView.getRootView().requestFocus();
+            // showSnackbar("Blocking keyboard...");
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
     @Override
     public void onBackPressed() {
         //close drawer if open and impl. press back again to leave
@@ -562,4 +624,67 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
     */
+
+    class TextfieldClickInterface {
+
+
+        @JavascriptInterface
+        public void reportCall(String functionName, String result) {
+            showToast(functionName);
+        }
+
+        @JavascriptInterface
+        public void hitSomething(String s) {
+           // if (!keyboardEnabled) {
+                if(System.currentTimeMillis() - lastTouchClick < 50 && !keyboardEnabled){
+                //showToast("Time was "+ (System.currentTimeMillis()-lastTouchClick));
+                    lastTouchClick = -1;
+                    runOnUiThread(() -> setKeyboardEnabled(true));
+                    keyboardEnabled = true;
+                    runOnUiThread(() -> simulateClick(lastXClick, lastYClick));
+                    clickReminder = Toast.makeText(getApplicationContext(), "Please click again to type", Toast.LENGTH_SHORT);
+                    clickReminder.show();
+                } else {
+
+                }
+
+                // Log.d(DEBUG_TAG, "hitsomething: " + s);
+                //if (s.contains("copyable-text")) {
+                //    webView.loadUrl("javascript:document.getElementsByClassName('pluggable-input-body copyable-text selectable-text')[0].click()");
+                //} if (s.startsWith("input")) {
+                //    webView.loadUrl("javascript:document.getElementsById('input-chatlist-search')[0].click()");
+                //}
+            //} else {
+                Log.d(DEBUG_TAG, "hitsomething_noif: " + s);
+           // }
+        }
+
+        @JavascriptInterface
+        public void hitNothing(String s) {
+            //if (keyboardEnabled) {
+                runOnUiThread(() -> setKeyboardEnabled(false));
+                keyboardEnabled = false;
+                //showToast("hitnothing");
+                //Log.d(DEBUG_TAG, "hitnothing: " + s);
+           // } else {
+                Log.d(DEBUG_TAG, "hitnothing_noif: " + s);
+           // }
+        }
+
+        private void simulateClick(float x, float y) {
+            // Obtain MotionEvent object
+            long downTime = SystemClock.uptimeMillis();
+            long eventTime = SystemClock.uptimeMillis() + 100;
+            // List of meta states found here:     developer.android.com/reference/android/view/KeyEvent.html#getMetaState()
+            int metaState = 0;
+            MotionEvent motionEvent = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_UP, x, y, metaState);
+            // Dispatch touch event to view
+            findViewById(android.R.id.content).dispatchTouchEvent(motionEvent);
+        }
+
+        @JavascriptInterface
+        public void setEndedIndex(int pIndex) {
+            showToast("setEndedIndex: " + pIndex);
+        }
+    }
 }
