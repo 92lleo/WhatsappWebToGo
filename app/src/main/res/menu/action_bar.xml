@@ -23,5 +23,6 @@
         android:icon="@drawable/ic_toggle_keyboard"
         android:orderInCategory="100"
         android:title="Toggle keyboard"
+        android:visible="false"
         app:showAsAction="always" />
 </menu>
