@@ -35,6 +35,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".WebviewActivity"
+            android:label="@string/app_name"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:persistableMode="persistAcrossReboots"
+            android:launchMode="singleInstance"
+            android:alwaysRetainTaskState="true"
+            android:hardwareAccelerated="true" >
+        </activity>
+        <activity
+            android:name=".CrosswalkActivity"
+            android:label="@string/app_name"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:persistableMode="persistAcrossReboots"
+            android:launchMode="singleInstance"
+            android:alwaysRetainTaskState="true"
+            android:hardwareAccelerated="true" >
+        </activity>
     </application>
-
 </manifest>

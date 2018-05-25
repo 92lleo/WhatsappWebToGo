@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="listener">
+        "javascript:var listenerAlreadyAdded; if(listenerAlreadyAdded==null){listenerAlreadyAdded = false;} var clickEventFunc = function(e){if(e.target &amp;&amp; (e.target.className== 'pluggable-input-body copyable-text selectable-text' || e.target.id == 'input-chatlist-search')){TFCLI.hitSomething(e.target.className+''); e.target.click(); } else {TFCLI.hitNothing(e.target.className+'');}}; if(!listenerAlreadyAdded){document.addEventListener('click',clickEventFunc); listenerAlreadyAdded = true;}"
+    </string>
+</resources>
