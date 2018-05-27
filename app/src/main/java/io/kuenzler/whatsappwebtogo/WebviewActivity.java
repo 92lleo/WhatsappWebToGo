@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.preference.PreferenceActivity;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -33,12 +34,14 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
+import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
@@ -47,8 +50,18 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.Locale;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpHeaders;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.client.ClientProtocolException;
+import cz.msebera.android.httpclient.client.methods.HttpGet;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 public class WebviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -60,8 +73,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
     private static final String chrome = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
+    //private static final String other = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36";
 
-    /*
     private static final String osxYosemity = "Macintosh; Intel Mac OS X 10_10_1";
     private static final String windows10 = "Windows 10";
     private static final String windows95 = "Windows 95";
@@ -70,8 +83,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private static final String toGo = "Linux; U; Android WhatsappWebToGo";
     private static final String safari = "AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.1.3 Safari/7046A194A";
     private static final String firefox = "Gecko/20100101 Firefox/40.1";
-    private static final String edge = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063";
-    */
+    private static final String edge = "AppleWebKit/537.36 (KHTML, like Gecko) webView/52.0.2743.116 Safari/537.36 Edge/15.15063";
+
 
     private static final String browser = chrome;
     private static final String device = androidCurrent;
@@ -82,7 +95,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private static final String STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE; //android.permission.WRITE_EXTERNAL_STORAGE
     private static final String[] VIDEO_PERMISSION = {CAMERA_PERMISSION, AUDIO_PERMISSION};
 
-    private static final String WHATSAPP_WEB_URL = "https://web.whatsapp.com";
+    private static final String WHATSAPP_WEB_URL = "https://web.whatsapp.com/\uD83C\uDF10/"+ Locale.getDefault().getLanguage();
 
     private static final int FILECHOOSER_RESULTCODE = 200;
     private static final int CAMERA_PERMISSION_RESULTCODE = 201;
@@ -201,46 +214,66 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             public void onPageFinished(WebView view, String url) {
                 view.scrollTo(0, 0);
                // showSnackbar("Unblock keyboard with the keyboard button on top");
-
-                // inject wrapper
-                // don't forget to remove newline chars
-                // webView.loadUrl("javascript:" + js);
-
-                // wrap all the functions needed
-                //String[] funcToWrap = new String[]{"parseMsgNotification", "func2"};
-                //for (String f : funcToWrap) {
-                //    webView.loadUrl("javascript:wrapFunc('" + f + "');");
-                //}
-
-                //webView.loadUrl("javascript:wrapFunc('parseMsgNotification')");
-                // webView.loadUrl("javascript:wrapFunc('alert')");
-                //webView.loadUrl("javascript:Interceptor.test('hallo')");
-
-                // if (Build.VERSION.SDK_INT >= 19) {
-                //     view.evaluateJavascript(audioJs, (String s) -> {
-                //         //ignore
-                //     });
-                //} else {
-                //    view.loadUrl(audioJs);
-                //}
-
-                //webView.loadUrl("javascript:window.Interceptor.showHTML" +
-                //        "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-
-                webView.loadUrl(listenerJS);
-                webView.evaluateJavascript(listenerJS, null);
             }
 
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                try {
+                    DefaultHttpClient client = new DefaultHttpClient();
+                    String url = request.getUrl().toString();
+                    if (url.equals("https://www.whatsapp.com/")) {
+                        showToast(url);
+                        url = WHATSAPP_WEB_URL;
+                    } else {
+                        return null;
+                    }
+                    HttpGet httpGet = new HttpGet(url);
+                    for(String key : request.getRequestHeaders().keySet()){
+                        httpGet.setHeader(key, request.getRequestHeaders().get(key));
+                    }
+
+                    //httpGet.setHeader("MY-CUSTOM-HEADER", "header value");
+                    httpGet.setHeader(HttpHeaders.USER_AGENT, userAgent);
+                    HttpResponse httpResponse = client.execute(httpGet);
+
+                    Header contentType = httpResponse.getEntity().getContentType();
+                    Header encoding = httpResponse.getEntity().getContentEncoding();
+                    InputStream responseInputStream = httpResponse.getEntity().getContent();
+
+                    String contentTypeValue = null;
+                    String encodingValue = null;
+                    if (contentType != null) {
+                        contentTypeValue = contentType.getValue();
+                    }
+                    if (encoding != null) {
+                        encodingValue = encoding.getValue();
+                    }
+                    return new WebResourceResponse(contentTypeValue, encodingValue, responseInputStream);
+                } catch (ClientProtocolException e) {
+                    //return null to tell WebView we failed to fetch it WebView should try again.
+                    return null;
+                } catch (IOException e) {
+                    //return null to tell WebView we failed to fetch it WebView should try again.
+                    return null;
+                }
+            }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+
+                Log.d(DEBUG_TAG, request.getUrl().toString());
                 //whatsapp sound:
                 // url.equals("https://web.whatsapp.com/assets/0a598282e94e87dea63e466d115e4a83.mp3"
+
+
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     Log.d(DEBUG_TAG, request.getUrl().toString());
                     if (request.getUrl().toString().contains("web.whatsapp.com")) {
                         return false;
+                    } else if (request.getUrl().toString().contains("www.whatsapp.com")){
+                        webView.loadUrl(WHATSAPP_WEB_URL);
+                        Log.d(DEBUG_TAG, "overwritten");
+                        return true;
                     } else {
                         Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
                         startActivity(intent);
@@ -275,90 +308,57 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             }
         });
 
-        webView.setDownloadListener((String url, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
-            //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
-            //for downloading directly through download manager
-
-
-
-            //String newUrl = url; //"'blob:https%3A//"+ url.substring(url.indexOf('/')+2)+"'";
-
-            showToast("Downloading is not supported yet.\n"+url.substring(url.indexOf('/')+2));
-
-            webView.evaluateJavascript("javascript:console.log('test');", null);
-
-            String js = "javascript:var url = 'blob:https%3A//"+ url.substring(url.indexOf('/')+2)+"';" +
-            //String js = "javascript:window.alert('test');" +
-                    //"var url = '"+newUrl+"';\n" +
-                    "var xhr = new XMLHttpRequest();" +
-                    "xhr.open('GET', url, true);" +
-                    "xhr.responseType = 'blob';" +
-                    "xhr.onload = function(e) {" +
-                    "  if (this.status == 200) {" +
-                    "    var myBlob = this.response;" +
-                    "    var reader = new FileReader();" +
-                    "    reader.onload = function() {" +
-                    "    var dataUrl = reader.result;" +
-                    "    var base64 = dataUrl.split(',')[1];" +
-                    //"    ImageDownloader.download(url, base64);" +
-                    "    console.log(base64);" +
-                    "    };" +
-                    "    reader.readAsDataURL(myBlob);" +
-                    "   };" +
-                    " }" +
-                    "};" +
-                    "xhr.send();";
-
-            Log.d(DEBUG_TAG, js);
-
-            webView.evaluateJavascript(js, null);
-            webView.loadUrl(js);
-            /*
-            url = url.replace("blob:", "");
-            DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-            execute("asdf", Uri.parse(url));
-            Log.d(DEBUG_TAG, url);
-            if(dm == null){
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                startActivity(intent);
-            } else {
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-                String filename = URLUtil.guessFileName(url, contentDisposition, mimetype);
-                filename = "WhatsApp_" + filename;
-                request.allowScanningByMediaScanner();
-                request.setMimeType(mimetype);
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "WhatsappWebToGo/"+filename);
-                request.setTitle(filename);
-                request.setDescription("Downloading from WhatsApp Web To Go");
-
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                        //permission granted
-                    } else {
-                        ActivityCompat.requestPermissions(this, new String[]{STORAGE_PERMISSION}, STORAGE_PERMISSION_RESULTCODE);
-                    }
-                }
-
-                dm.enqueue(request);
-
-            } */
-        });
-
         // webView.addJavascriptInterface(new NotificationInterface(this), "Android");
         webView.addJavascriptInterface(new TextfieldClickInterface(), "TFCLI");
         webView.addJavascriptInterface(new ImageDownloader(), "ImageDownloader");
 
-        webView.getSettings().setUserAgentString(userAgent);
+        webView.getSettings().setUserAgentString(chrome);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
+
+
+        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        webView.setScrollbarFadingEnabled(false);
+
+        webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setSaveFormData(true);
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setAllowFileAccessFromFileURLs(true);
+        webView.getSettings().setBlockNetworkImage(false);
+        webView.getSettings().setBlockNetworkLoads(false);
+        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        webView.getSettings().setSupportMultipleWindows(true);
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setNeedInitialFocus(false);
+        webView.getSettings().setAppCacheEnabled(true);
+        webView.getSettings().setDatabaseEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setGeolocationEnabled(true);
+        webView.getSettings().setCacheMode(-1);
+        webView.setScrollBarStyle(0);
+
+
+
         if (savedInstanceState == null) {
-            webView.loadUrl(WHATSAPP_WEB_URL);
+            webView.getSettings().setUserAgentString(chrome);
+            webView.loadUrl(WHATSAPP_WEB_URL); //"https://amiunique.org/fp");
         } else {
+            webView.getSettings().setUserAgentString(chrome);
             Log.d(DEBUG_TAG, "savedInstanceState is present");
         }
 
-        webView.loadUrl(listenerJS);
-        webView.evaluateJavascript(listenerJS, null);
+        //webView.loadUrl(listenerJS);
+       // webView.evaluateJavascript(listenerJS, null);
+        webView.getSettings().setUserAgentString(chrome);
 
         webView.setOnTouchListener((View v, MotionEvent event) -> {
             if(clickReminder!= null){
@@ -390,6 +390,9 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             }
             return false; */
         });
+        webView.getSettings().setUserAgentString(chrome);
+
+
     }
 
 
@@ -618,6 +621,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             showSnackbar("logging out...");
             webView.loadUrl("javascript:localStorage.clear()");
             WebStorage.getInstance().deleteAllData();
+            webView.getSettings().setUserAgentString(chrome);
             webView.reload();
         } else if (id == R.id.nav_new) {
             //showToast("nav_new");
@@ -644,7 +648,10 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             showAbout();
         } else if (id == R.id.nav_reload) {
             showSnackbar("reloading...");
-            webView.reload();
+            //showToast(webView.getSettings().getUserAgentString());
+            webView.getSettings().setUserAgentString(chrome);
+            //webView.reload();
+            webView.loadUrl(WHATSAPP_WEB_URL);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

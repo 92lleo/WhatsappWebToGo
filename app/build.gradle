@@ -29,6 +29,7 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'org.xwalk:xwalk_core_library:23.53.589.4'
+    implementation "cz.msebera.android:httpclient:4.4.1.2"
     // 23.53.589.4
     //implementation(name:'xwalk_shared_library-23.53.589.4', ext:'aar')
     testImplementation 'junit:junit:4.12'

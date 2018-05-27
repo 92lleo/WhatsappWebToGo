@@ -14,8 +14,8 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Intent myIntent = new Intent(MainActivity.this, WebviewActivity.class);
-        Intent myIntent = new Intent(MainActivity.this, CrosswalkActivity.class);
+        Intent myIntent = new Intent(MainActivity.this, WebviewActivity.class);
+        //Intent myIntent = new Intent(MainActivity.this, CrosswalkActivity.class);
         MainActivity.this.startActivity(myIntent);
         finish();
     }
