@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
     private static final String chrome = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
+
+    private static final String test = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36";
 
     /*
     private static final String osxYosemity = "Macintosh; Intel Mac OS X 10_10_1";
@@ -74,14 +77,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String browser = chrome;
     private static final String device = androidCurrent;
-    private static final String userAgent = "Mozilla/5.0 (" + device + ") " + browser;
+    private static final String userAgent = test; //"Mozilla/5.0 (" + device + ") " + browser;
 
     private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA";
     private static final String AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO; // "android.permission.RECORD_AUDIO";
     private static final String STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE; //android.permission.WRITE_EXTERNAL_STORAGE
     private static final String[] VIDEO_PERMISSION = {CAMERA_PERMISSION, AUDIO_PERMISSION};
 
-    private static final String WHATSAPP_WEB_URL = "https://web.whatsapp.com";
+    private static final String WHATSAPP_WEB_URL = "https://web.whatsapp.com/\uD83C\uDF10/"+ Locale.getDefault().getLanguage();
 
     private static final int FILECHOOSER_RESULTCODE = 200;
     private static final int CAMERA_PERMISSION_RESULTCODE = 201;
@@ -140,9 +143,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         webView.getSettings().setDomStorageEnabled(true); //for html5 app
 
-        webView.getSettings().setAppCacheEnabled(true); // app cache
+        webView.getSettings().setAppCacheEnabled(false); // app cache
         webView.getSettings().setAppCachePath(getCacheDir().getAbsolutePath()); //app cache
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT); //app cache
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE); //app cache
 
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(true);
@@ -199,35 +202,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         webView.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
                 view.scrollTo(0, 0);
-               // showSnackbar("Unblock keyboard with the keyboard button on top");
-
-                // inject wrapper
-                // don't forget to remove newline chars
-                // webView.loadUrl("javascript:" + js);
-
-                // wrap all the functions needed
-                //String[] funcToWrap = new String[]{"parseMsgNotification", "func2"};
-                //for (String f : funcToWrap) {
-                //    webView.loadUrl("javascript:wrapFunc('" + f + "');");
-                //}
-
-                //webView.loadUrl("javascript:wrapFunc('parseMsgNotification')");
-                // webView.loadUrl("javascript:wrapFunc('alert')");
-                //webView.loadUrl("javascript:Interceptor.test('hallo')");
-
-                // if (Build.VERSION.SDK_INT >= 19) {
-                //     view.evaluateJavascript(audioJs, (String s) -> {
-                //         //ignore
-                //     });
-                //} else {
-                //    view.loadUrl(audioJs);
-                //}
-
-                //webView.loadUrl("javascript:window.Interceptor.showHTML" +
-                //        "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-
-                webView.loadUrl(listenerJS);
-                webView.evaluateJavascript(listenerJS, null);
+                //webView.loadUrl(listenerJS);
+               // webView.evaluateJavascript(listenerJS, null);
             }
 
 
@@ -279,38 +255,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //for downloading directly through download manager
 
             showToast("Downloading is not supported yet.");
-
-            /*
-            url = url.replace("blob:", "");
-            DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-            execute("asdf", Uri.parse(url));
-            Log.d(DEBUG_TAG, url);
-            if(dm == null){
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                startActivity(intent);
-            } else {
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-                String filename = URLUtil.guessFileName(url, contentDisposition, mimetype);
-                filename = "WhatsApp_" + filename;
-                request.allowScanningByMediaScanner();
-                request.setMimeType(mimetype);
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "WhatsappWebToGo/"+filename);
-                request.setTitle(filename);
-                request.setDescription("Downloading from WhatsApp Web To Go");
-
-                if (Build.VERSION.SDK_INT >= 23) {
-                    if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                        //permission granted
-                    } else {
-                        ActivityCompat.requestPermissions(this, new String[]{STORAGE_PERMISSION}, STORAGE_PERMISSION_RESULTCODE);
-                    }
-                }
-
-                dm.enqueue(request);
-
-            } */
         });
 
         // webView.addJavascriptInterface(new NotificationInterface(this), "Android");
@@ -356,39 +300,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             return false; */
         });
-    }
-
-
-    public int execute(String filename, Uri blobUri) {
-
-        int success = 1;
-
-        try {
-            ContentResolver resolver = getContentResolver();
-            InputStream is = resolver.openInputStream(blobUri);
-
-            Log.d(DEBUG_TAG, Environment.DIRECTORY_DOWNLOADS+"/test.jpg");
-            File blobFile = new File(Environment.DIRECTORY_DOWNLOADS+"/test.jpg");
-            FileOutputStream outStream = new FileOutputStream(blobFile);
-
-            int length = -1;
-            int size = 4096;
-            byte[] buffer = new byte[size];
-
-            while ((length = is.read(buffer)) != -1) {
-                outStream.write(buffer, 0, length);
-                outStream.flush();
-            }
-
-            is.close();
-            outStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(DEBUG_TAG, "ERROR(djv_exportBlob) Unable to export:" + filename);
-            success = 0;
-        } finally {
-            return success;
-        }
     }
 
     @Override
@@ -506,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("WhatsappWeb To Go\n\nby Leonhard Künzler\n" +
                 "android@kuenzler.io\n\ngithub.com/92lleo/WhatsappWebToGo\n\n" +
-                "(c)2017\n\nv0.8.0")
+                "(c)2018\n\nv0.8.1")
                 .setCancelable(false)
                 .setPositiveButton("Ok", null);
         AlertDialog alert = builder.create();
@@ -631,42 +542,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-    // JS stuff
-    /*
-    public class NotificationInterface {
-        Context mContext;
-
-        NotificationInterface(Context c) {
-            mContext = c;
-        }
-
-        @JavascriptInterface
-        public void showToast(String toast) {
-            Toast.makeText(mContext, toast, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    class FunctionCallInterceptor {
-        @JavascriptInterface
-        public void reportCall(String functionName, String result) {
-            showToast(functionName);
-        }
-
-        @JavascriptInterface
-        public void showHtml(String toShow) {
-            Log.d("html", toShow);
-            showToast(toShow);
-        }
-
-        @JavascriptInterface
-        public void setEndedIndex(int pIndex) {
-            showToast("setEndedIndex: " + pIndex);
-        }
-    }
-    */
 
     class TextfieldClickInterface {
-
 
         @JavascriptInterface
         public void reportCall(String functionName, String result) {
@@ -720,11 +597,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             MotionEvent motionEvent = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_UP, x, y, metaState);
             // Dispatch touch event to view
             findViewById(android.R.id.content).dispatchTouchEvent(motionEvent);
-        }
-
-        @JavascriptInterface
-        public void setEndedIndex(int pIndex) {
-            showToast("setEndedIndex: " + pIndex);
         }
     }
 }
