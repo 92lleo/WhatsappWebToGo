@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -443,8 +444,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void showSnackbar(String msg) {
         this.runOnUiThread(() -> {
-            final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_SHORT);
+            final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), msg, 900);
             snackbar.setAction("dismiss", (View view) -> snackbar.dismiss());
+            snackbar.setActionTextColor(Color.parseColor("#075E54"));
             snackbar.show();
         });
     }
