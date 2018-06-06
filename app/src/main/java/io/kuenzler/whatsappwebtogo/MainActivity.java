@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
     private static final String chrome = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
-    private static final String test = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36";
+    //private static final String test = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36";
 
     /*
     private static final String osxYosemity = "Macintosh; Intel Mac OS X 10_10_1";
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private static final String browser = chrome;
     private static final String device = androidCurrent;
-    private static final String userAgent = test; //"Mozilla/5.0 (" + device + ") " + browser;
+    private static final String userAgent = "Mozilla/5.0 (" + device + ") " + browser;
 
     private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA";
     private static final String AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO; // "android.permission.RECORD_AUDIO";
