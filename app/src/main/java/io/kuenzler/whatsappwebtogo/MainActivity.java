@@ -438,6 +438,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void toggleKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if(inputMethodManager == null){
+            return;
+        }
         if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
             mainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             showSnackbar("Unblocking keyboard...");
