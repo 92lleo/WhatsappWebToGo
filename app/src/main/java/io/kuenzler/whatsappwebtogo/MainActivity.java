@@ -212,6 +212,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.d(DEBUG_TAG, request.getUrl().toString());
                     if (request.getUrl().toString().contains("web.whatsapp.com")) {
                         return false;
+                    } else if(request.getUrl().toString().contains("www.whatsapp.com")){
+                        loadWhatsapp();
                     } else {
                         Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
                         startActivity(intent);
