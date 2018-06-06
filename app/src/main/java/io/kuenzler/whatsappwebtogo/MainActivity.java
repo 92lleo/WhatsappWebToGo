@@ -3,13 +3,11 @@ package io.kuenzler.whatsappwebtogo;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
@@ -45,8 +43,6 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Locale;
 
