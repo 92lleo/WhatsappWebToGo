@@ -143,9 +143,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         webView.getSettings().setDomStorageEnabled(true); //for html5 app
 
-        webView.getSettings().setAppCacheEnabled(false); // app cache
+        webView.getSettings().setAppCacheEnabled(true); // app cache
         webView.getSettings().setAppCachePath(getCacheDir().getAbsolutePath()); //app cache
-        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE); //app cache
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT); //app cache
 
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(true);
