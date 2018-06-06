@@ -258,13 +258,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         webView.getSettings().setUserAgentString(userAgent);
         if (savedInstanceState == null) {
-            webView.loadUrl(WHATSAPP_WEB_URL);
+            //webView.loadUrl(WHATSAPP_WEB_URL);
+            loadWhatsapp();
         } else {
             Log.d(DEBUG_TAG, "savedInstanceState is present");
         }
 
-        webView.loadUrl(listenerJS);
-        webView.evaluateJavascript(listenerJS, null);
+        //webView.loadUrl(listenerJS);
+        //webView.evaluateJavascript(listenerJS, null);
 
         webView.setOnTouchListener((View v, MotionEvent event) -> {
             if(clickReminder!= null){
@@ -296,6 +297,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             return false;
         });
+    }
+
+    private void loadWhatsapp(){
+        webView.loadUrl(WHATSAPP_WEB_URL);
+        webView.loadUrl(listenerJS);
+        webView.evaluateJavascript(listenerJS, null);
     }
 
     @Override
@@ -494,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showSnackbar("logging out...");
             webView.loadUrl("javascript:localStorage.clear()");
             WebStorage.getInstance().deleteAllData();
-            webView.loadUrl(WHATSAPP_WEB_URL);
+            loadWhatsapp();
         } else if (id == R.id.nav_new) {
             //showToast("nav_new");
         } else if (id == R.id.nav_switch) {
@@ -520,7 +527,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showAbout();
         } else if (id == R.id.nav_reload) {
             showSnackbar("reloading...");
-            webView.loadUrl(WHATSAPP_WEB_URL);
+            //webView.loadUrl(WHATSAPP_WEB_URL);
+            loadWhatsapp();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
