@@ -498,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showSnackbar("logging out...");
             webView.loadUrl("javascript:localStorage.clear()");
             WebStorage.getInstance().deleteAllData();
-            webView.reload();
+            webView.loadUrl(WHATSAPP_WEB_URL);
         } else if (id == R.id.nav_new) {
             //showToast("nav_new");
         } else if (id == R.id.nav_switch) {
@@ -524,7 +524,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showAbout();
         } else if (id == R.id.nav_reload) {
             showSnackbar("reloading...");
-            webView.reload();
+            webView.loadUrl(WHATSAPP_WEB_URL);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
