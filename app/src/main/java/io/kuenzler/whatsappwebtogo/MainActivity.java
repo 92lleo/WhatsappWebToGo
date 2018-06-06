@@ -510,22 +510,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //showToast("nav_switch");
         } else if (id == R.id.nav_settings) {
             //showToast("nav_settings");
-
-            // NavigationView navigationView= findViewById(R.id.nav_settings)
-            // Menu menuNav=navigationView.getMenu();
-            // MenuItem nav_item2 = menuNav.findItem(R.id.nav_item2);
-            // R.id.nav_settings.setEnabled(false)
-            // walk(getApplicationContext().getFilesDir());
-            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            //  walk(new File(getApplicationContext().getDataDir().toString() + "/app_webview/"));
-            // }
         } else if (id == R.id.nav_about) {
-            File[] files = {getApplicationContext().getFilesDir()};
-             //showFiles(files);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                File[] files2 = {new File(getApplicationContext().getDataDir().toString())}; // + "/app_webview/")};
-                showFiles(files2);
-            }
             showAbout();
         } else if (id == R.id.nav_reload) {
             showSnackbar("reloading...");
@@ -537,20 +522,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    public static void showFiles(File[] files) {
-        for (File file : files) {
-            if (file.isDirectory()) {
-                Log.d(DEBUG_TAG, "Directory: " + file.getName());
-                showFiles(file.listFiles()); // Calls same method again.
-            } else {
-                Log.d(DEBUG_TAG,"File: " + file.getName());
-            }
-        }
-    }
-
-
-
 
     class TextfieldClickInterface {
 
