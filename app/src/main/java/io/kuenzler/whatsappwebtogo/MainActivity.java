@@ -278,8 +278,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             lastTouchClick = System.currentTimeMillis();
             lastXClick = event.getX();
             lastYClick = event.getY();
-            return false;
-            /*
+            //return false;
+
             if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS
                     && event.getAction() == MotionEvent.ACTION_DOWN
                     && Math.abs(event.getY() - webView.getHeight()) < 160) {
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     lastYClick = event.getY();
                 }
             }
-            return false; */
+            return false;
         });
     }
 
