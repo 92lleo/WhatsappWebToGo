@@ -3,7 +3,10 @@ package io.kuenzler.whatsappwebtogo;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -101,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     boolean keyboardEnabled = false;
     Toast clickReminder = null;
 
+    private SharedPreferences prefs;
+
     private final Activity activity = this;
 
     private ValueCallback<Uri[]> mUploadMessage;
@@ -110,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        prefs = this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -312,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         webView.onResume();
         mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        keyboardEnabled = prefs.getBoolean("keyboardEnabled",false);
         //showSnackbar("Unblock keyboard with the keyboard button on top");
     }
 
@@ -470,6 +478,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // showSnackbar("Blocking keyboard...");
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
+        prefs.edit().putBoolean("keyboardEnabled", enable).apply();
     }
 
     @Override
