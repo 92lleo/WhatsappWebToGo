@@ -433,7 +433,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("WhatsappWeb To Go\n\nby Leonhard Künzler\nBWK Technik GbR\n" +
                 "android@kuenzler.io\n\ngithub.com/92lleo/WhatsappWebToGo\n\n" +
-                "© 2017-2018\n\nv0.8.1")
+                "© 2017-2018\n\nv0.8.2")
                 .setCancelable(false)
                 .setPositiveButton("Ok", null);
         AlertDialog alert = builder.create();
