@@ -20,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -319,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         webView.onResume();
         keyboardEnabled = prefs.getBoolean("keyboardEnabled",false);
+        setNavbarEnabled(prefs.getBoolean("navbarEnabled",true));
         if(!keyboardEnabled){
             setKeyboardEnabled(false);
         }
@@ -519,6 +521,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         prefs.edit().putBoolean("keyboardEnabled", enable).apply();
     }
 
+    private void toggleNavbarEnabled() {
+        ActionBar navbar = getSupportActionBar();
+        if (navbar != null) {
+            setNavbarEnabled(!getSupportActionBar().isShowing());
+        }
+    }
+
+    private boolean isNavbarEnabled() {
+        ActionBar navbar = getSupportActionBar();
+        if (navbar != null) {
+            return navbar.isShowing();
+        }
+        return true;
+    }
+
+    private void setNavbarEnabled(boolean enable) {
+        ActionBar navbar = getSupportActionBar();
+        if (navbar != null) {
+            if (enable) {
+                navbar.show();
+            } else {
+                navbar.hide();
+            }
+            prefs.edit().putBoolean("navbarEnabled", enable).apply();
+        }
+    }
+
     @Override
     public void onBackPressed() {
         //close drawer if open and impl. press back again to leave
@@ -539,13 +568,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_hide) {
-            MenuItem view = findViewById(R.id.nav_hide);
-            if (getSupportActionBar().isShowing()) {
-                showSnackbar("hiding... swipe right to show navigation bar");
-                getSupportActionBar().hide();
-            } else {
-                getSupportActionBar().show();
-            }
+            toggleNavbarEnabled();
         } else if (id == R.id.nav_logout) {
             showSnackbar("logging out...");
             webView.loadUrl("javascript:localStorage.clear()");
