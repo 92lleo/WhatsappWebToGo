@@ -203,8 +203,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                //whatsapp sound:
-                // url.equals("https://web.whatsapp.com/assets/0a598282e94e87dea63e466d115e4a83.mp3"
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                     Log.d(DEBUG_TAG, request.getUrl().toString());
@@ -220,21 +218,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 return super.shouldOverrideUrlLoading(view, request);
             }
-
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d(DEBUG_TAG, url);
-                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    if (url.contains("web.whatsapp.com")) {
-                        return false;
-                    } else {
-                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(i);
-                    }
-                    return true;
-                }
-                return super.shouldOverrideUrlLoading(view, url);
-            }
-
             @RequiresApi(api = Build.VERSION_CODES.M)
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 String msg = String.format("Error: %s - %s", error.getErrorCode(), error.getDescription());
@@ -249,13 +232,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         webView.setDownloadListener((String url, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
             //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
             //for downloading directly through download manager
-
             showToast("Downloading is not supported yet.");
         });
 
         webView.getSettings().setUserAgentString(userAgent);
         if (savedInstanceState == null) {
-            //webView.loadUrl(WHATSAPP_WEB_URL);
             loadWhatsapp();
         } else {
             Log.d(DEBUG_TAG, "savedInstanceState is present");
@@ -269,7 +250,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             lastTouchClick = System.currentTimeMillis();
             lastXClick = event.getX();
             lastYClick = event.getY();
-            //return false;
 
             if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS
                     && event.getAction() == MotionEvent.ACTION_DOWN
@@ -308,7 +288,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         showIntroInfo();
         showVersionInfo();
-        //showSnackbar("Unblock keyboard with the keyboard button on top");
     }
 
     @Override
@@ -491,7 +470,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (enable && mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
             mainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             showSnackbar("Keyboard is unblocked.");
-            //inputMethodManager.showSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
         } else if (!enable) {
             mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             webView.getRootView().requestFocus();
