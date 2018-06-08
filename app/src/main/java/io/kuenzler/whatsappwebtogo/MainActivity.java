@@ -3,7 +3,6 @@ package io.kuenzler.whatsappwebtogo;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,7 +45,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -455,20 +453,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void toggleKeyboard() {
         setKeyboardEnabled(!keyboardEnabled);
-        //InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //if(inputMethodManager == null){
-        //    return;
-        //}
-        //if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
-        //   mainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        //    showSnackbar("Unblocking keyboard...");
-        //    //inputMethodManager.showSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
-        //} else {
-        //    mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        //    webView.getRootView().requestFocus();
-        //    showSnackbar("Blocking keyboard...");
-        //    inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-        //}
     }
 
     private void setKeyboardEnabled(boolean enable){
