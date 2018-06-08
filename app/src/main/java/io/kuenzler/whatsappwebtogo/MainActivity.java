@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -35,7 +34,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
-import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -51,12 +49,6 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private static final String listenerJS = "javascript:var listenerAlreadyAdded; if(listenerAlreadyAdded==null){listenerAlreadyAdded = false;} var clickEventFunc = function(e){if(e.target && (e.target.className== 'pluggable-input-body copyable-text selectable-text' || e.target.id == 'input-chatlist-search')){TFCLI.hitSomething(e.target.className+''); e.target.click(); } else {TFCLI.hitNothing(e.target.className+'');}}; if(!listenerAlreadyAdded){document.addEventListener('click',clickEventFunc); listenerAlreadyAdded = true;}";
-    //private static final String listenerJS = "javascript:document.addEventListener('click',function(e){  if(e.target && (e.target.className== 'pluggable-input-body copyable-text selectable-text' " +
-    //        "|| e.target.id == 'input-chatlist-search')){TFCLI.hitSomething(); } else {TFCLI.hitNothing(e.target.className+'')} })";
-
-    // private static final String js = "function wrapFunc(name) {alert('works!); if (typeof window[name] == 'function') {var original = window['__' + name] = window[name]; window[name] = function() { var result = original.apply(this, arguments); Interceptor.reportCall(name, result.toString()); return result; } alert('yes'); } else { alert('no'); }}";
 
     private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
     private static final String chrome = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
@@ -206,8 +198,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         webView.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
                 view.scrollTo(0, 0);
-                //webView.loadUrl(listenerJS);
-               // webView.evaluateJavascript(listenerJS, null);
             }
 
 
@@ -263,9 +253,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showToast("Downloading is not supported yet.");
         });
 
-        // webView.addJavascriptInterface(new NotificationInterface(this), "Android");
-        webView.addJavascriptInterface(new TextfieldClickInterface(), "TFCLI");
-
         webView.getSettings().setUserAgentString(userAgent);
         if (savedInstanceState == null) {
             //webView.loadUrl(WHATSAPP_WEB_URL);
@@ -273,9 +260,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             Log.d(DEBUG_TAG, "savedInstanceState is present");
         }
-
-        //webView.loadUrl(listenerJS);
-        //webView.evaluateJavascript(listenerJS, null);
 
         webView.setOnTouchListener((View v, MotionEvent event) -> {
             if(clickReminder!= null){
@@ -311,8 +295,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void loadWhatsapp(){
         webView.loadUrl(WHATSAPP_WEB_URL);
-        webView.loadUrl(listenerJS);
-        webView.evaluateJavascript(listenerJS, null);
     }
 
     @Override
@@ -589,62 +571,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    class TextfieldClickInterface {
-
-        @JavascriptInterface
-        public void reportCall(String functionName, String result) {
-            showToast(functionName);
-        }
-
-        @JavascriptInterface
-        public void hitSomething(String s) {
-           // if (!keyboardEnabled) {
-                if(System.currentTimeMillis() - lastTouchClick < 50 && !keyboardEnabled){
-                //showToast("Time was "+ (System.currentTimeMillis()-lastTouchClick));
-                    lastTouchClick = -1;
-                    runOnUiThread(() -> setKeyboardEnabled(true));
-                    keyboardEnabled = true;
-                    runOnUiThread(() -> simulateClick(lastXClick, lastYClick));
-                    clickReminder = Toast.makeText(getApplicationContext(), "Please click again to type", Toast.LENGTH_SHORT);
-                    clickReminder.show();
-                } else {
-
-                }
-
-                // Log.d(DEBUG_TAG, "hitsomething: " + s);
-                //if (s.contains("copyable-text")) {
-                //    webView.loadUrl("javascript:document.getElementsByClassName('pluggable-input-body copyable-text selectable-text')[0].click()");
-                //} if (s.startsWith("input")) {
-                //    webView.loadUrl("javascript:document.getElementsById('input-chatlist-search')[0].click()");
-                //}
-            //} else {
-                Log.d(DEBUG_TAG, "hitsomething_noif: " + s);
-           // }
-        }
-
-        @JavascriptInterface
-        public void hitNothing(String s) {
-            //if (keyboardEnabled) {
-                runOnUiThread(() -> setKeyboardEnabled(false));
-                keyboardEnabled = false;
-                //showToast("hitnothing");
-                //Log.d(DEBUG_TAG, "hitnothing: " + s);
-           // } else {
-                Log.d(DEBUG_TAG, "hitnothing_noif: " + s);
-           // }
-        }
-
-        private void simulateClick(float x, float y) {
-            // Obtain MotionEvent object
-            long downTime = SystemClock.uptimeMillis();
-            long eventTime = SystemClock.uptimeMillis() + 100;
-            // List of meta states found here:     developer.android.com/reference/android/view/KeyEvent.html#getMetaState()
-            int metaState = 0;
-            MotionEvent motionEvent = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_UP, x, y, metaState);
-            // Dispatch touch event to view
-            findViewById(android.R.id.content).dispatchTouchEvent(motionEvent);
-        }
     }
 }
