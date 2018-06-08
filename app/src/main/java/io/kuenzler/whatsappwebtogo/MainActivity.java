@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
@@ -321,6 +322,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(!keyboardEnabled){
             setKeyboardEnabled(false);
         }
+        showIntroInfo();
+        showVersionInfo();
         //showSnackbar("Unblock keyboard with the keyboard button on top");
     }
 
@@ -436,6 +439,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setPositiveButton("Ok", null);
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void showVersionInfo(){
+        int lastShownVersionCode = 0;
+        int currentVersionCode = 0;
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            currentVersionCode = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(DEBUG_TAG, "Error checking versioncode", e);
+            return;
+        }
+        lastShownVersionCode = prefs.getInt("lastShownVersionCode",0);
+        if(lastShownVersionCode == 0){
+            prefs.edit().putInt("lastShownVersionCode", currentVersionCode).apply();
+            return;
+        }
+        if(lastShownVersionCode < currentVersionCode){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Thanks for updating!\nNew in this version:\n-" +
+                    "-Keyboard blocking setting will be remembered.\n" +
+                    "-Navbar visibility setting will be remembered.")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", null);
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            return;
+        }
+        prefs.edit().putInt("lastShownVersionCode", currentVersionCode).apply();
+    }
+
+    private void showIntroInfo(){
+        if(!prefs.getBoolean("introShown",false)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Thanks for installing!\nJust connect your phone as you would on your computer.\n" +
+                    "To unlock the keyboard, use the keyboard button top right. Your settings will be saved.")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", null);
+            AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            return;
+        }
+        prefs.edit().putBoolean("introShown", true).apply();
     }
 
     private void showToast(String msg) {
