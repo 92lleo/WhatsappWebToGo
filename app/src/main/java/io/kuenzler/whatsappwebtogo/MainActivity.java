@@ -200,15 +200,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 view.scrollTo(0, 0);
             }
 
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     Log.d(DEBUG_TAG, request.getUrl().toString());
                     if (request.getUrl().toString().contains("web.whatsapp.com")) {
                         return false;
-                    } else if(request.getUrl().toString().contains("www.whatsapp.com")){
+                    } else if (request.getUrl().toString().contains("www.whatsapp.com")) {
                         loadWhatsapp();
                     } else {
                         Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
@@ -218,6 +217,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 return super.shouldOverrideUrlLoading(view, request);
             }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N) {
+                    Log.d(DEBUG_TAG, url);
+                    if (url.contains("web.whatsapp.com")) {
+                        return false;
+                    } else if (url.contains("www.whatsapp.com")) {
+                        loadWhatsapp();
+                    } else {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(intent);
+                    }
+                    return true;
+                }
+                return super.shouldOverrideUrlLoading(view, url);
+            }
+
             @RequiresApi(api = Build.VERSION_CODES.M)
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 String msg = String.format("Error: %s - %s", error.getErrorCode(), error.getDescription());
