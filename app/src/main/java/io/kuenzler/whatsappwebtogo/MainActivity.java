@@ -377,6 +377,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(mUploadMessage == null){
+            return;
+        }
         switch (requestCode) {
             case FILECHOOSER_RESULTCODE:
                 if (resultCode == RESULT_CANCELED || data.getData() == null) {
