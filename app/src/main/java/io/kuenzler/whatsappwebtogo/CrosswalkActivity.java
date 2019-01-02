@@ -2,6 +2,7 @@ package io.kuenzler.whatsappwebtogo;
 
 import android.Manifest;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
@@ -17,10 +18,14 @@ public class CrosswalkActivity extends XWalkActivity {
 
     private static final String uaChrome = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
-    private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA";
-    private static final String AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO; // "android.permission.RECORD_AUDIO";
-    private static final String STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE; //android.permission.WRITE_EXTERNAL_STORAGE
-    private static final String[] VIDEO_PERMISSION = {CAMERA_PERMISSION, AUDIO_PERMISSION};
+    private static final String device = "Linux; U; Android " + Build.VERSION.RELEASE;
+    private static final String browser = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
+    private static final String userAgent = "Mozilla/5.0 (" + device + ") " + browser;
+
+    private static final String   CAMERA_PERMISSION  = Manifest.permission.CAMERA;                 // "android.permission.CAMERA";
+    private static final String   AUDIO_PERMISSION   = Manifest.permission.RECORD_AUDIO;           // "android.permission.RECORD_AUDIO";
+    private static final String   STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE; //android.permission.WRITE_EXTERNAL_STORAGE
+    private static final String[] VIDEO_PERMISSION   = {CAMERA_PERMISSION, AUDIO_PERMISSION};
 
     private static final String WHATSAPP_WEB_URL = "https://web.whatsapp.com";
     private final Activity ACTIVITY = this;
@@ -79,8 +84,9 @@ public class CrosswalkActivity extends XWalkActivity {
         settings.setCacheMode(XWalkSettings.LOAD_CACHE_ELSE_NETWORK);
         settings.setDomStorageEnabled(true);
         settings.setJavaScriptEnabled(true);
+        settings.setUserAgentString(userAgent);
 
-        mXWalkView.setUserAgentString(uaChrome);
+        mXWalkView.setUserAgentString(userAgent);
         if(bundle != null && !bundle.isEmpty()) {
             mXWalkView.restoreState(bundle);
         } else {
