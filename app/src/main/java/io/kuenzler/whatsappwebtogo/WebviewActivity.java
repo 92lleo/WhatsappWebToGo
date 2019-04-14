@@ -5,14 +5,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Instrumentation;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
-import android.preference.PreferenceActivity;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -20,6 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,7 +37,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
-import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
@@ -52,7 +54,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -84,7 +85,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private static final String firefox = "Gecko/20100101 Firefox/40.1";
     private static final String edge = "AppleWebKit/537.36 (KHTML, like Gecko) webView/52.0.2743.116 Safari/537.36 Edge/15.15063";
 
-    private static final String chrome60 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36"
+    private static final String chrome60 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36";
 
 
     private static final String browser = chrome;
@@ -105,6 +106,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private static final int STORAGE_PERMISSION_RESULTCODE = 204;
 
     private static final String DEBUG_TAG = "WAWEBTOGO";
+
+    private SharedPreferences prefs;
 
     private WebView webView;
     private ViewGroup mainView;
@@ -140,6 +143,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         navigationView.setNavigationItemSelectedListener(this);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        prefs = this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
 
         mainView = findViewById(R.id.layout);
         webView = findViewById(R.id.webview);
@@ -270,7 +275,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                     if (request.getUrl().toString().contains("web.whatsapp.com")) {
                         return false;
                     } else if (request.getUrl().toString().contains("www.whatsapp.com")){
-                        webView.loadUrl(WHATSAPP_WEB_URL);
+                        loadWhatsapp();
                         Log.d(DEBUG_TAG, "overwritten");
                         return true;
                     } else {
@@ -342,12 +347,11 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         webView.getSettings().setDatabaseEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setGeolocationEnabled(true);
-        webView.getSettings().setCacheMode(-1);
-        webView.setScrollBarStyle(0);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
         if (savedInstanceState == null) {
-            webView.getSettings().setUserAgentString(chrome);
-            webView.loadUrl(WHATSAPP_WEB_URL); //"https://amiunique.org/fp");
+            loadWhatsapp();
         } else {
             webView.getSettings().setUserAgentString(chrome);
             Log.d(DEBUG_TAG, "savedInstanceState is present");
@@ -387,9 +391,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             }
             return false; */
         });
-        webView.getSettings().setUserAgentString(chrome);
 
-
+        webView.getSettings().setUserAgentString(userAgent);
     }
 
 
@@ -429,8 +432,16 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     protected void onResume() {
         super.onResume();
         webView.onResume();
-        mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-        //showSnackbar("Unblock keyboard with the keyboard button on top");
+
+        keyboardEnabled = prefs.getBoolean("keyboardEnabled",true);
+        setNavbarEnabled(prefs.getBoolean("navbarEnabled",true));
+
+        if(!keyboardEnabled){
+            setKeyboardEnabled(false);
+        }
+
+        showIntroInfo();
+        showVersionInfo();
     }
 
     @Override
@@ -536,11 +547,18 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         }
     }
 
-    private void showAbout() {
+    private void showPopupDialog(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("WhatsappWeb To Go\n\nby Leonhard Künzler\n" +
-                "android@kuenzler.io\n\ngithub.com/92lleo/WhatsappWebToGo\n\n" +
-                "(c)2018\n\nv0.8.1")
+        builder.setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("Ok", null);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void showPopupDialog(int id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(id)
                 .setCancelable(false)
                 .setPositiveButton("Ok", null);
         AlertDialog alert = builder.create();
@@ -585,6 +603,70 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             // showSnackbar("Blocking keyboard...");
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
+        prefs.edit().putBoolean("keyboardEnabled", enable).apply();
+    }
+
+    private void toggleNavbarEnabled() {
+        ActionBar navbar = getSupportActionBar();
+        if (navbar != null) {
+            setNavbarEnabled(!getSupportActionBar().isShowing());
+        }
+    }
+
+    private boolean isNavbarEnabled() {
+        ActionBar navbar = getSupportActionBar();
+        if (navbar != null) {
+            return navbar.isShowing();
+        }
+        return true;
+    }
+
+    private void setNavbarEnabled(boolean enable) {
+        ActionBar navbar = getSupportActionBar();
+        if (navbar != null) {
+            if (enable) {
+                navbar.show();
+            } else {
+                navbar.hide();
+            }
+            prefs.edit().putBoolean("navbarEnabled", enable).apply();
+        }
+    }
+
+    private void showVersionInfo() {
+        int lastShownVersionCode = 0;
+        int currentVersionCode = 0;
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            currentVersionCode = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(DEBUG_TAG, "Error checking versioncode", e);
+            return;
+        }
+        lastShownVersionCode = prefs.getInt("lastShownVersionCode", 0);
+        if (lastShownVersionCode == 0) {
+            prefs.edit().putInt("lastShownVersionCode", currentVersionCode).apply();
+            return;
+        }
+        if (lastShownVersionCode < currentVersionCode) {
+            showPopupDialog(R.string.versionInfo);
+        } else {
+            return;
+        }
+        prefs.edit().putInt("lastShownVersionCode", currentVersionCode).apply();
+    }
+
+    private void showIntroInfo() {
+        if (!prefs.getBoolean("introShown", false)) {
+            showPopupDialog(R.string.introInfo);
+        } else {
+            return;
+        }
+        prefs.edit().putBoolean("introShown", true).apply();
+    }
+
+    private void showAbout() {
+        showPopupDialog(R.string.about);
     }
 
     @Override
@@ -599,6 +681,11 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             showToast("Click back again to close");
             lastBackClick = System.currentTimeMillis();
         }
+    }
+
+    private void loadWhatsapp(){
+        webView.getSettings().setUserAgentString(userAgent);
+        webView.loadUrl(WHATSAPP_WEB_URL);
     }
 
     @Override
@@ -618,8 +705,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             showSnackbar("logging out...");
             webView.loadUrl("javascript:localStorage.clear()");
             WebStorage.getInstance().deleteAllData();
-            webView.getSettings().setUserAgentString(chrome);
-            webView.reload();
+            loadWhatsapp();
         } else if (id == R.id.nav_new) {
             //showToast("nav_new");
         } else if (id == R.id.nav_switch) {
@@ -645,10 +731,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             showAbout();
         } else if (id == R.id.nav_reload) {
             showSnackbar("reloading...");
-            //showToast(webView.getSettings().getUserAgentString());
-            webView.getSettings().setUserAgentString(chrome);
-            //webView.reload();
-            webView.loadUrl(WHATSAPP_WEB_URL);
+            loadWhatsapp();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
