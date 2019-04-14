@@ -73,7 +73,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
     private static final String chrome = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
-    //private static final String other = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36";
 
     private static final String osxYosemity = "Macintosh; Intel Mac OS X 10_10_1";
     private static final String windows10 = "Windows 10";
@@ -85,10 +84,12 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private static final String firefox = "Gecko/20100101 Firefox/40.1";
     private static final String edge = "AppleWebKit/537.36 (KHTML, like Gecko) webView/52.0.2743.116 Safari/537.36 Edge/15.15063";
 
+    private static final String chrome60 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36"
+
 
     private static final String browser = chrome;
     private static final String device = androidCurrent;
-    private static final String userAgent = "Mozilla/5.0 (" + device + ") " + browser;
+    private static final String userAgent = chrome60; //"Mozilla/5.0 (" + device + ") " + browser;
 
     private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA";
     private static final String AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO; // "android.permission.RECORD_AUDIO";
@@ -264,8 +265,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 //whatsapp sound:
                 // url.equals("https://web.whatsapp.com/assets/0a598282e94e87dea63e466d115e4a83.mp3"
 
-
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     Log.d(DEBUG_TAG, request.getUrl().toString());
                     if (request.getUrl().toString().contains("web.whatsapp.com")) {
@@ -345,8 +344,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         webView.getSettings().setGeolocationEnabled(true);
         webView.getSettings().setCacheMode(-1);
         webView.setScrollBarStyle(0);
-
-
 
         if (savedInstanceState == null) {
             webView.getSettings().setUserAgentString(chrome);
