@@ -4,11 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.Toast;
 
 import org.xwalk.core.XWalkActivity;
-import org.xwalk.core.XWalkPreferences;
 import org.xwalk.core.XWalkSettings;
 import org.xwalk.core.XWalkView;
 
