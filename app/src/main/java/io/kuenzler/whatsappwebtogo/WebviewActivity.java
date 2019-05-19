@@ -3,8 +3,6 @@ package io.kuenzler.whatsappwebtogo;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Instrumentation;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,20 +11,16 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
-import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -39,8 +33,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -50,6 +42,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -63,12 +59,6 @@ import cz.msebera.android.httpclient.client.methods.HttpGet;
 import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 public class WebviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private static final String listenerJS = "javascript:var listenerAlreadyAdded; if(listenerAlreadyAdded==null){listenerAlreadyAdded = false;} var clickEventFunc = function(e){if(e.target && (e.target.className== 'pluggable-input-body copyable-text selectable-text' || e.target.id == 'input-chatlist-search')){TFCLI.hitSomething(e.target.className+''); e.target.click(); } else {TFCLI.hitNothing(e.target.className+'');}}; if(!listenerAlreadyAdded){document.addEventListener('click',clickEventFunc); listenerAlreadyAdded = true;}";
-    //private static final String listenerJS = "javascript:document.addEventListener('click',function(e){  if(e.target && (e.target.className== 'pluggable-input-body copyable-text selectable-text' " +
-    //        "|| e.target.id == 'input-chatlist-search')){TFCLI.hitSomething(); } else {TFCLI.hitNothing(e.target.className+'')} })";
-
-    // private static final String js = "function wrapFunc(name) {alert('works!); if (typeof window[name] == 'function') {var original = window['__' + name] = window[name]; window[name] = function() { var result = original.apply(this, arguments); Interceptor.reportCall(name, result.toString()); return result; } alert('yes'); } else { alert('no'); }}";
 
     private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
     private static final String chrome = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
@@ -85,7 +75,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     private static final String chrome60 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36";
 
-
     private static final String browser = chrome;
     private static final String device = androidCurrent;
     private static final String userAgent = chrome60; //"Mozilla/5.0 (" + device + ") " + browser;
@@ -95,12 +84,15 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private static final String STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE; //android.permission.WRITE_EXTERNAL_STORAGE
     private static final String[] VIDEO_PERMISSION = {CAMERA_PERMISSION, AUDIO_PERMISSION};
 
-    private static final String WHATSAPP_WEB_URL = "https://web.whatsapp.com/\uD83C\uDF10/"+ Locale.getDefault().getLanguage();
+    private static final String WORLD_ICON = "\uD83C\uDF10";
+    private static final String WHATSAPP_WEB_URL = "https://web.whatsapp.com"
+            + "/" + WORLD_ICON + "/"
+            + Locale.getDefault().getLanguage();
 
-    private static final int FILECHOOSER_RESULTCODE = 200;
-    private static final int CAMERA_PERMISSION_RESULTCODE = 201;
-    private static final int AUDIO_PERMISSION_RESULTCODE = 202;
-    private static final int VIDEO_PERMISSION_RESULTCODE = 203;
+    private static final int FILECHOOSER_RESULTCODE        = 200;
+    private static final int CAMERA_PERMISSION_RESULTCODE  = 201;
+    private static final int AUDIO_PERMISSION_RESULTCODE   = 202;
+    private static final int VIDEO_PERMISSION_RESULTCODE   = 203;
     private static final int STORAGE_PERMISSION_RESULTCODE = 204;
 
     private static final String DEBUG_TAG = "WAWEBTOGO";
@@ -310,19 +302,12 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             }
         });
 
-        // webView.addJavascriptInterface(new NotificationInterface(this), "Android");
-        webView.addJavascriptInterface(new TextfieldClickInterface(), "TFCLI");
-        webView.addJavascriptInterface(new ImageDownloader(), "ImageDownloader");
-
-        webView.getSettings().setUserAgentString(chrome);
-        webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
 
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(false);
-
 
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(false);
@@ -355,75 +340,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             Log.d(DEBUG_TAG, "savedInstanceState is present");
         }
 
-        //webView.loadUrl(listenerJS);
-       // webView.evaluateJavascript(listenerJS, null);
-        webView.getSettings().setUserAgentString(chrome);
-
-        webView.setOnTouchListener((View v, MotionEvent event) -> {
-            if(clickReminder!= null){
-                clickReminder.cancel();
-                clickReminder = null;
-            }
-            lastTouchClick = System.currentTimeMillis();
-            lastXClick = event.getX();
-            lastYClick = event.getY();
-            return false;
-            /*
-            if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS
-                    && event.getAction() == MotionEvent.ACTION_DOWN
-                    && Math.abs(event.getY() - webView.getHeight()) < 160) {
-                if (System.currentTimeMillis() - lastTouchClick < 1300) {
-                    if (Math.abs(lastXClick - event.getX()) < 180) {
-                        showSnackbar("Use the keyboard button on top to type");
-                        lastTouchClick = 0;
-                    } else {
-                        lastTouchClick = System.currentTimeMillis();
-                        lastXClick = event.getX();
-                        lastYClick = event.getY();
-                    }
-                } else {
-                    lastTouchClick = System.currentTimeMillis();
-                    lastXClick = event.getX();
-                    lastYClick = event.getY();
-                }
-            }
-            return false; */
-        });
-
         webView.getSettings().setUserAgentString(userAgent);
-    }
-
-
-    public int execute(String filename, Uri blobUri) {
-
-        int success = 1;
-
-        try {
-            ContentResolver resolver = getContentResolver();
-            InputStream is = resolver.openInputStream(blobUri);
-
-            Log.d(DEBUG_TAG, Environment.DIRECTORY_DOWNLOADS+"/test.jpg");
-            File blobFile = new File(Environment.DIRECTORY_DOWNLOADS+"/test.jpg");
-            FileOutputStream outStream = new FileOutputStream(blobFile);
-
-            int length = -1;
-            int size = 4096;
-            byte[] buffer = new byte[size];
-
-            while ((length = is.read(buffer)) != -1) {
-                outStream.write(buffer, 0, length);
-                outStream.flush();
-            }
-
-            is.close();
-            outStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(DEBUG_TAG, "ERROR(djv_exportBlob) Unable to export:" + filename);
-            success = 0;
-        } finally {
-            return success;
-        }
     }
 
     @Override
@@ -478,7 +395,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case VIDEO_PERMISSION_RESULTCODE:
-                if (permissions.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                if (permissions.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     try {
                         currentPermissionRequest.grant(currentPermissionRequest.getResources());
                     } catch (RuntimeException e) {
@@ -499,7 +417,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                         Log.e(DEBUG_TAG, "Granting permissions failed", e);
                     }
                 } else {
-                    showSnackbar("Permission not granted, can't use " + (requestCode == CAMERA_PERMISSION_RESULTCODE ? "camera" : "microphone"));
+                    showSnackbar("Permission not granted, can't use " +
+                            (requestCode == CAMERA_PERMISSION_RESULTCODE ? "camera" : "microphone"));
                     currentPermissionRequest.deny();
                 }
                 break;
@@ -511,7 +430,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 }
                 break;
             default:
-                Log.d(DEBUG_TAG, "Got permission result with unknown request code " + requestCode + " - " + Arrays.asList(permissions).toString());
+                Log.d(DEBUG_TAG, "Got permission result with unknown request code " +
+                        requestCode + " - " + Arrays.asList(permissions).toString());
         }
         currentPermissionRequest = null;
     }
@@ -541,7 +461,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 }
                 break;
             default:
-                Log.d(DEBUG_TAG, "Got activity result with unknown request code " + requestCode + " - " + data.toString());
+                Log.d(DEBUG_TAG, "Got activity result with unknown request code " +
+                        requestCode + " - " + data.toString());
         }
     }
 
@@ -607,16 +528,13 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private void toggleNavbarEnabled() {
         ActionBar navbar = getSupportActionBar();
         if (navbar != null) {
-            setNavbarEnabled(!getSupportActionBar().isShowing());
+            setNavbarEnabled(!navbar.isShowing());
         }
     }
 
     private boolean isNavbarEnabled() {
         ActionBar navbar = getSupportActionBar();
-        if (navbar != null) {
-            return navbar.isShowing();
-        }
-        return true;
+        return (navbar!= null) && (navbar.isShowing());
     }
 
     private void setNavbarEnabled(boolean enable) {
@@ -676,6 +594,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         } else if (System.currentTimeMillis() - lastBackClick < 1100) {
             finishAffinity();
         } else {
+            webView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ESCAPE));
             showToast("Click back again to close");
             lastBackClick = System.currentTimeMillis();
         }
@@ -720,12 +639,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             //  walk(new File(getApplicationContext().getDataDir().toString() + "/app_webview/"));
             // }
         } else if (id == R.id.nav_about) {
-            File[] files = {getApplicationContext().getFilesDir()};
-             //showFiles(files);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                File[] files2 = {new File(getApplicationContext().getDataDir().toString())}; // + "/app_webview/")};
-                showFiles(files2);
-            }
             showAbout();
         } else if (id == R.id.nav_reload) {
             showSnackbar("reloading...");
@@ -735,141 +648,5 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public static void showFiles(File[] files) {
-        for (File file : files) {
-            if (file.isDirectory()) {
-                Log.d(DEBUG_TAG, "Directory: " + file.getName());
-                showFiles(file.listFiles()); // Calls same method again.
-            } else {
-                Log.d(DEBUG_TAG,"File: " + file.getName());
-            }
-        }
-    }
-
-
-
-    // JS stuff
-    /*
-    public class NotificationInterface {
-        Context mContext;
-
-        NotificationInterface(Context c) {
-            mContext = c;
-        }
-
-        @JavascriptInterface
-        public void showToast(String toast) {
-            Toast.makeText(mContext, toast, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    class FunctionCallInterceptor {
-        @JavascriptInterface
-        public void reportCall(String functionName, String result) {
-            showToast(functionName);
-        }
-
-        @JavascriptInterface
-        public void showHtml(String toShow) {
-            Log.d("html", toShow);
-            showToast(toShow);
-        }
-
-        @JavascriptInterface
-        public void setEndedIndex(int pIndex) {
-            showToast("setEndedIndex: " + pIndex);
-        }
-    }
-    */
-
-    class ImageDownloader {
-
-        @JavascriptInterface
-        public void download(String url, String base64){
-            Log.d(DEBUG_TAG, "download! " + url);
-            showToast("download! "+url);
-        }
-
-    }
-
-    class TextfieldClickInterface {
-
-
-        @JavascriptInterface
-        public void reportCall(String functionName, String result) {
-            showToast(functionName);
-        }
-
-        @JavascriptInterface
-        public void hitSomething(String s) {
-           // if (!keyboardEnabled) {
-                if(System.currentTimeMillis() - lastTouchClick < 50 && !keyboardEnabled){
-                //showToast("Time was "+ (System.currentTimeMillis()-lastTouchClick));
-                    lastTouchClick = -1;
-                    runOnUiThread(() -> setKeyboardEnabled(true));
-                    keyboardEnabled = true;
-                    new Thread(() -> {
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        simulateClick(lastXClick, lastYClick);
-                    }).start();
-                    clickReminder = Toast.makeText(getApplicationContext(), "Please click again to type", Toast.LENGTH_SHORT);
-                    clickReminder.show();
-                } else {
-
-                }
-
-                // Log.d(DEBUG_TAG, "hitsomething: " + s);
-                //if (s.contains("copyable-text")) {
-                //    webView.loadUrl("javascript:document.getElementsByClassName('pluggable-input-body copyable-text selectable-text')[0].click()");
-                //} if (s.startsWith("input")) {
-                //    webView.loadUrl("javascript:document.getElementsById('input-chatlist-search')[0].click()");
-                //}
-            //} else {
-                Log.d(DEBUG_TAG, "hitsomething_noif: " + s);
-           // }
-        }
-
-        @JavascriptInterface
-        public void hitNothing(String s) {
-            //if (keyboardEnabled) {
-                runOnUiThread(() -> setKeyboardEnabled(false));
-                keyboardEnabled = false;
-                //showToast("hitnothing");
-                //Log.d(DEBUG_TAG, "hitnothing: " + s);
-           // } else {
-                Log.d(DEBUG_TAG, "hitnothing_noif: " + s);
-           // }
-        }
-
-        private void simulateClick(float x, float y) {
-
-            Instrumentation m_Instrumentation = new Instrumentation();
-
-            //pozx goes from 0 to SCREEN WIDTH , pozy goes from 0 to SCREEN HEIGHT
-            m_Instrumentation.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(),
-                    SystemClock.uptimeMillis(),MotionEvent.ACTION_DOWN,x, y, 0));
-            m_Instrumentation.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(),
-                    SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,x, y, 0));
-
-            // Obtain MotionEvent object
-            //long downTime = SystemClock.uptimeMillis();
-            //long eventTime = SystemClock.uptimeMillis() + 100;
-            // List of meta states found here:     developer.android.com/reference/android/view/KeyEvent.html#getMetaState()
-            //int metaState = 0;
-            //MotionEvent motionEvent = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_UP, x, y, metaState);
-            // Dispatch touch event to view
-            //findViewById(android.R.id.content).dispatchTouchEvent(motionEvent);
-        }
-
-        @JavascriptInterface
-        public void setEndedIndex(int pIndex) {
-            showToast("setEndedIndex: " + pIndex);
-        }
     }
 }
