@@ -7,7 +7,7 @@
 
     <string name="action_settings">Einstellungen</string>
 
-    <string name="versionInfo">Thanks for updating!\nNew in version 1.3.0:\n&#8211;Your settings will be remembered (again)\n&#8211;Links open in your default browser now (bug in android 5)\n&#8211;Other small bugfixes</string>
+    <string name="versionInfo">Thanks for updating!\nNew in version 1.4.0:\n&#8211;Build for Android Q\n&#8211;Fix Chrome version warning</string>
     <string name="introInfo">Thanks for installing!\nJust connect your phone as you would on your computer.\nTo lock and unlock the keyboard, use the keyboard button top right. Your settings will be saved.</string>
-    <string name="about">WhatsappWeb To Go\n\nby Leonhard Künzler\nBWK Technik GbR\nandroid@kuenzler.io\n\ngithub.com/92lleo/WhatsappWebToGo\n\n© 2017&#8211;2019\n\nv1.3.0\n\nThis app is in no way affiliated with WhatsApp Inc. The rights for WhatsApp and WhatsApp Web belong to WhatsApp Inc. This app is a private project to enable the use of WhatsApp Web on Android Devices</string>
+    <string name="about">WhatsappWeb To Go\n\nby Leonhard Künzler\nBWK Technik GbR\nandroid@kuenzler.io\n\ngithub.com/92lleo/WhatsappWebToGo\n\n© 2017&#8211;2019\n\nv1.4.0\n\nThis app is in no way affiliated with WhatsApp Inc. The rights for WhatsApp and WhatsApp Web belong to WhatsApp Inc. This app is a private project to enable the use of WhatsApp Web on Android Devices</string>
 </resources>
