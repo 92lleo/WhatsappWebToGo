@@ -73,11 +73,11 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private static final String firefox = "Gecko/20100101 Firefox/40.1";
     private static final String edge = "AppleWebKit/537.36 (KHTML, like Gecko) webView/52.0.2743.116 Safari/537.36 Edge/15.15063";
 
-    private static final String chrome60 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36";
+    private static final String chrome75 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36";
 
     private static final String browser = chrome;
     private static final String device = androidCurrent;
-    private static final String userAgent = chrome60; //"Mozilla/5.0 (" + device + ") " + browser;
+    private static final String userAgent = chrome75; //"Mozilla/5.0 (" + device + ") " + browser;
 
     private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA";
     private static final String AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO; // "android.permission.RECORD_AUDIO";
