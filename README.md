@@ -2,8 +2,6 @@
 
 Mobile Client for WhatsappWeb
 
-Builds at [Google Play Beta](https://play.google.com/store/apps/details?id=io.kuenzler.whatsappwebtogo)
-
 This app lets you access WhatsApp Web on your mobile phone or tablet.
 It has full support for sending audio and pictures / video.
 
