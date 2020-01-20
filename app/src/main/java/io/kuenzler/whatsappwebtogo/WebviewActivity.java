@@ -159,7 +159,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
         webView.setWebChromeClient(new WebChromeClient() {
 
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onPermissionRequest(final PermissionRequest request) {
                 if (request.getResources()[0].equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
@@ -209,7 +208,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         webView.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
                 view.scrollTo(0, 0);
-               // showSnackbar("Unblock keyboard with the keyboard button on top");
+                // showSnackbar("Unblock keyboard with the keyboard button on top");
             }
 
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -260,36 +259,22 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 //whatsapp sound:
                 // url.equals("https://web.whatsapp.com/assets/0a598282e94e87dea63e466d115e4a83.mp3"
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Log.d(DEBUG_TAG, request.getUrl().toString());
-                    if (request.getUrl().toString().contains("web.whatsapp.com")) {
-                        return false;
-                    } else if (request.getUrl().toString().contains("www.whatsapp.com")){
-                        loadWhatsapp();
-                        Log.d(DEBUG_TAG, "overwritten");
-                        return true;
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
-                        startActivity(intent);
-                    }
-                    return true;
+                Log.d(DEBUG_TAG, request.getUrl().toString());
+                if (request.getUrl().toString().contains("web.whatsapp.com")) {
+                    return false;
+                    // } else if (request.getUrl().toString().contains("www.whatsapp.com")){
+                    //    loadWhatsapp();
+                    //    Log.d(DEBUG_TAG, "overwritten");
+                    //   return true;
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
+                    startActivity(intent);
                 }
-                return super.shouldOverrideUrlLoading(view, request);
+                return true;
+
+                //return super.shouldOverrideUrlLoading(view, request);
             }
 
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d(DEBUG_TAG, url);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    if (url.contains("web.whatsapp.com")) {
-                        return false;
-                    } else {
-                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(i);
-                    }
-                    return true;
-                }
-                return super.shouldOverrideUrlLoading(view, url);
-            }
 
             @RequiresApi(api = Build.VERSION_CODES.M)
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
