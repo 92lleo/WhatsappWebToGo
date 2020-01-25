@@ -206,75 +206,25 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         });
 
         webView.setWebViewClient(new WebViewClient() {
+
             public void onPageFinished(WebView view, String url) {
                 view.scrollTo(0, 0);
-                // showSnackbar("Unblock keyboard with the keyboard button on top");
-            }
-
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                try {
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    String url = request.getUrl().toString();
-                    if (url.equals("https://www.whatsapp.com/")) {
-                        showToast(url);
-                        url = WHATSAPP_WEB_URL;
-                    } else {
-                        return null;
-                    }
-                    HttpGet httpGet = new HttpGet(url);
-                    for(String key : request.getRequestHeaders().keySet()){
-                        httpGet.setHeader(key, request.getRequestHeaders().get(key));
-                    }
-
-                    //httpGet.setHeader("MY-CUSTOM-HEADER", "header value");
-                    httpGet.setHeader(HttpHeaders.USER_AGENT, userAgent);
-                    HttpResponse httpResponse = client.execute(httpGet);
-
-                    Header contentType = httpResponse.getEntity().getContentType();
-                    Header encoding = httpResponse.getEntity().getContentEncoding();
-                    InputStream responseInputStream = httpResponse.getEntity().getContent();
-
-                    String contentTypeValue = null;
-                    String encodingValue = null;
-                    if (contentType != null) {
-                        contentTypeValue = contentType.getValue();
-                    }
-                    if (encoding != null) {
-                        encodingValue = encoding.getValue();
-                    }
-                    return new WebResourceResponse(contentTypeValue, encodingValue, responseInputStream);
-                } catch (ClientProtocolException e) {
-                    //return null to tell WebView we failed to fetch it WebView should try again.
-                    return null;
-                } catch (IOException e) {
-                    //return null to tell WebView we failed to fetch it WebView should try again.
-                    return null;
-                }
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                final String url = request.getUrl().toString();
+                Log.d(DEBUG_TAG, url);
 
-                Log.d(DEBUG_TAG, request.getUrl().toString());
-                //whatsapp sound:
-                // url.equals("https://web.whatsapp.com/assets/0a598282e94e87dea63e466d115e4a83.mp3"
-
-                Log.d(DEBUG_TAG, request.getUrl().toString());
-                if (request.getUrl().toString().contains("web.whatsapp.com")) {
-                    return false;
-                    // } else if (request.getUrl().toString().contains("www.whatsapp.com")){
-                    //    loadWhatsapp();
-                    //    Log.d(DEBUG_TAG, "overwritten");
-                    //   return true;
+                if (url.contains("web.whatsapp.com")) {
+                    // whatsapp web request -> fine
+                    return super.shouldOverrideUrlLoading(view, request);
                 } else {
                     Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
                     startActivity(intent);
+                    return true;
                 }
-                return true;
-
-                //return super.shouldOverrideUrlLoading(view, request);
             }
-
 
             @RequiresApi(api = Build.VERSION_CODES.M)
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
@@ -307,7 +257,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         webView.getSettings().setBlockNetworkImage(false);
         webView.getSettings().setBlockNetworkLoads(false);
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        webView.getSettings().setSupportMultipleWindows(true);
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setNeedInitialFocus(false);
