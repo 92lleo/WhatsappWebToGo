@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -26,12 +27,17 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Arrays;
+import java.util.Locale;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
@@ -42,21 +48,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Locale;
-
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpHeaders;
-import cz.msebera.android.httpclient.HttpResponse;
-import cz.msebera.android.httpclient.client.ClientProtocolException;
-import cz.msebera.android.httpclient.client.methods.HttpGet;
-import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 public class WebviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -273,10 +264,10 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         super.onResume();
         webView.onResume();
 
-        keyboardEnabled = prefs.getBoolean("keyboardEnabled",true);
-        setNavbarEnabled(prefs.getBoolean("navbarEnabled",true));
+        keyboardEnabled = prefs.getBoolean("keyboardEnabled", true);
+        setNavbarEnabled(prefs.getBoolean("navbarEnabled", true));
 
-        if(!keyboardEnabled){
+        if (!keyboardEnabled) {
             setKeyboardEnabled(false);
         }
 
@@ -317,7 +308,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case VIDEO_PERMISSION_RESULTCODE:
                 if (permissions.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
@@ -374,6 +365,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case FILECHOOSER_RESULTCODE:
                 if (resultCode == RESULT_CANCELED || data.getData() == null) {
@@ -435,7 +427,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         }
     }
 
-    private void setKeyboardEnabled(boolean enable){
+    private void setKeyboardEnabled(boolean enable) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (enable && mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
             mainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
@@ -459,7 +451,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     private boolean isNavbarEnabled() {
         ActionBar navbar = getSupportActionBar();
-        return (navbar!= null) && (navbar.isShowing());
+        return (navbar != null) && (navbar.isShowing());
     }
 
     private void setNavbarEnabled(boolean enable) {
@@ -525,7 +517,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         }
     }
 
-    private void loadWhatsapp(){
+    private void loadWhatsapp() {
         webView.getSettings().setUserAgentString(userAgent);
         webView.loadUrl(WHATSAPP_WEB_URL);
     }
@@ -554,15 +546,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             //showToast("nav_switch");
         } else if (id == R.id.nav_settings) {
             //showToast("nav_settings");
-
-            // NavigationView navigationView= findViewById(R.id.nav_settings)
-            // Menu menuNav=navigationView.getMenu();
-            // MenuItem nav_item2 = menuNav.findItem(R.id.nav_item2);
-            // R.id.nav_settings.setEnabled(false)
-            // walk(getApplicationContext().getFilesDir());
-            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            //  walk(new File(getApplicationContext().getDataDir().toString() + "/app_webview/"));
-            // }
         } else if (id == R.id.nav_about) {
             showAbout();
         } else if (id == R.id.nav_reload) {
