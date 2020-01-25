@@ -137,27 +137,49 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         prefs = this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
 
         mainView = findViewById(R.id.layout);
+
+        // webview stuff
+
         webView = findViewById(R.id.webview);
 
         webView.getSettings().setJavaScriptEnabled(true); //for wa web
-
         webView.getSettings().setAllowContentAccess(true); // for camera
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setAllowFileAccessFromFileURLs(true);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
-
         webView.getSettings().setMediaPlaybackRequiresUserGesture(false); //for audio messages
 
         webView.getSettings().setDomStorageEnabled(true); //for html5 app
+        webView.getSettings().setDatabaseEnabled(true);
+        webView.getSettings().setAppCacheEnabled(false); // deprecated
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
 
-        webView.getSettings().setAppCacheEnabled(true); // app cache
-        webView.getSettings().setAppCachePath(getCacheDir().getAbsolutePath()); //app cache
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT); //app cache
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
 
-        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
+
+        webView.getSettings().setSaveFormData(true);
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setBlockNetworkImage(false);
+        webView.getSettings().setBlockNetworkLoads(false);
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        webView.getSettings().setNeedInitialFocus(false);
+        webView.getSettings().setGeolocationEnabled(true);
+        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         webView.setScrollbarFadingEnabled(true);
 
         webView.setWebChromeClient(new WebChromeClient() {
+
+            @Override
+            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
+                Toast.makeText(getApplicationContext(), "OnCreateWindow", Toast.LENGTH_LONG).show();
+                return true;
+            }
 
             @Override
             public void onPermissionRequest(final PermissionRequest request) {
@@ -236,36 +258,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 Log.d(DEBUG_TAG, "Unhandled key event: " + event.toString());
             }
         });
-
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setUseWideViewPort(true);
-
-        webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setDisplayZoomControls(false);
-
-        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-        webView.setScrollbarFadingEnabled(false);
-
-        webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient());
-        webView.getSettings().setSaveFormData(true);
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setAllowFileAccessFromFileURLs(true);
-        webView.getSettings().setBlockNetworkImage(false);
-        webView.getSettings().setBlockNetworkLoads(false);
-        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setNeedInitialFocus(false);
-        webView.getSettings().setAppCacheEnabled(true);
-        webView.getSettings().setDatabaseEnabled(true);
-        webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setGeolocationEnabled(true);
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
         if (savedInstanceState == null) {
             loadWhatsapp();
