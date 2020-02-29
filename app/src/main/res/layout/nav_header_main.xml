@@ -30,6 +30,6 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1.5.0" />
+        android:text="1.5.1" />
 
 </LinearLayout>
