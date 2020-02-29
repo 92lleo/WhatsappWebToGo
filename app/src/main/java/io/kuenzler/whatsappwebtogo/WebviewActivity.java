@@ -33,12 +33,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.Arrays;
-import java.util.Locale;
-
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -49,9 +43,14 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Arrays;
+import java.util.Locale;
+
 public class WebviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    // private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
     private static final String CHROME_FULL = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36";
     private static final String USER_AGENT = CHROME_FULL;
 
@@ -76,13 +75,9 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     private SharedPreferences mSharedPrefs;
 
-    private long lastTouchClick = 0;
-    private float lastXClick = 0;
-    private float lastYClick = 0;
     private WebView mWebView;
     private ViewGroup mMainView;
 
-    Toast clickReminder = null;
     private long mLastBackClick = 0;
 
     boolean mKeyboardEnabled = false;
@@ -411,18 +406,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             showSnackbar("Blocking keyboard...");
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
-    }
-
-    private void toggleNavbarEnabled() {
-        ActionBar navbar = getSupportActionBar();
-        if (navbar != null) {
-            setNavbarEnabled(!navbar.isShowing());
-        }
-    }
-
-    private boolean isNavbarEnabled() {
-        ActionBar navbar = getSupportActionBar();
-        return (navbar != null) && (navbar.isShowing());
         mSharedPrefs.edit().putBoolean("keyboardEnabled", enable).apply();
     }
 
