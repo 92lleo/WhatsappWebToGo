@@ -250,9 +250,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         keyboardEnabled = prefs.getBoolean("keyboardEnabled", true);
         setNavbarEnabled(prefs.getBoolean("navbarEnabled", true));
 
-        if (!keyboardEnabled) {
-            setKeyboardEnabled(false);
-        }
+        setKeyboardEnabled(keyboardEnabled);
 
         showIntroInfo();
         showVersionInfo();
@@ -397,29 +395,20 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     }
 
     private void toggleKeyboard() {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        if (mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
-            mainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-            showSnackbar("Unblocking keyboard...");
-            //inputMethodManager.showSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
-        } else {
-            mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-            webView.getRootView().requestFocus();
-            showSnackbar("Blocking keyboard...");
-            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
-        }
+        setKeyboardEnabled(!keyboardEnabled);
     }
 
-    private void setKeyboardEnabled(boolean enable) {
+    private void setKeyboardEnabled(final boolean enable) {
+        keyboardEnabled = enable;
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (enable && mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
             mainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-            //showSnackbar("Unblocking keyboard...");
+            showSnackbar("Unblocking keyboard...");
             //inputMethodManager.showSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
         } else if (!enable) {
             mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             webView.getRootView().requestFocus();
-            // showSnackbar("Blocking keyboard...");
+            showSnackbar("Blocking keyboard...");
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
         prefs.edit().putBoolean("keyboardEnabled", enable).apply();
