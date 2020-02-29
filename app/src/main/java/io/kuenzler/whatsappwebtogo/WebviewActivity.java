@@ -208,7 +208,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 Log.d(DEBUG_TAG, "WebView console message: " + cm.message());
                 return super.onConsoleMessage(cm);
             }
-            
+
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
                 mUploadMessage = filePathCallback;
                 Intent chooserIntent = fileChooserParams.createIntent();
