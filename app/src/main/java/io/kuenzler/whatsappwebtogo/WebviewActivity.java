@@ -51,28 +51,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 public class WebviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
-    private static final String chrome = "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36";
-
-    private static final String osxYosemity = "Macintosh; Intel Mac OS X 10_10_1";
-    private static final String windows10 = "Windows 10";
-    private static final String windows95 = "Windows 95";
-    private static final String windows30 = "Windows 3.0";
-    private static final String android8 = "Linux; U; Android 8.0.0; ko-kr; LG-L160L Build/IML74K";
-    private static final String toGo = "Linux; U; Android WhatsappWebToGo";
-    private static final String safari = "AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.1.3 Safari/7046A194A";
-    private static final String firefox = "Gecko/20100101 Firefox/40.1";
-    private static final String edge = "AppleWebKit/537.36 (KHTML, like Gecko) webView/52.0.2743.116 Safari/537.36 Edge/15.15063";
-
+    // private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
     private static final String chromeFull = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36";
-
-    private static final String browser = chrome;
-    private static final String device = androidCurrent;
-    private static final String userAgent = chromeFull; //"Mozilla/5.0 (" + device + ") " + browser;
+    private static final String userAgent = chromeFull;
 
     private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA";
     private static final String AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO; // "android.permission.RECORD_AUDIO";
-    private static final String STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE; //android.permission.WRITE_EXTERNAL_STORAGE
     private static final String[] VIDEO_PERMISSION = {CAMERA_PERMISSION, AUDIO_PERMISSION};
 
     private static final String WORLD_ICON = "\uD83C\uDF10";
