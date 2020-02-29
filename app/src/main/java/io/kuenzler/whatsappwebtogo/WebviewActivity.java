@@ -52,8 +52,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 public class WebviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     // private static final String androidCurrent = "Linux; U; Android " + Build.VERSION.RELEASE;
-    private static final String chromeFull = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36";
-    private static final String userAgent = chromeFull;
+    private static final String CHROME_FULL = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36";
+    private static final String USER_AGENT = CHROME_FULL;
 
     private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA";
     private static final String AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO; // "android.permission.RECORD_AUDIO";
@@ -72,23 +72,23 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     private static final String DEBUG_TAG = "WAWEBTOGO";
 
-    private SharedPreferences prefs;
-
-    private WebView webView;
-    private ViewGroup mainView;
-
-    private long lastTouchClick = 0;
-    private long lastBackClick = 0;
-    private float lastXClick = 0;
-    private float lastYClick = 0;
-
-    boolean keyboardEnabled = false;
-    Toast clickReminder = null;
-
     private final Activity activity = this;
 
+    private SharedPreferences mSharedPrefs;
+
+    private long lastTouchClick = 0;
+    private float lastXClick = 0;
+    private float lastYClick = 0;
+    private WebView mWebView;
+    private ViewGroup mMainView;
+
+    Toast clickReminder = null;
+    private long mLastBackClick = 0;
+
+    boolean mKeyboardEnabled = false;
+
     private ValueCallback<Uri[]> mUploadMessage;
-    private PermissionRequest currentPermissionRequest;
+    private PermissionRequest mCurrentPermissionRequest;
 
 
     @Override
@@ -109,46 +109,46 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        prefs = this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
+        mSharedPrefs = this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
 
-        mainView = findViewById(R.id.layout);
+        mMainView = findViewById(R.id.layout);
 
         // webview stuff
 
-        webView = findViewById(R.id.webview);
+        mWebView = findViewById(R.id.webview);
 
-        webView.getSettings().setJavaScriptEnabled(true); //for wa web
-        webView.getSettings().setAllowContentAccess(true); // for camera
-        webView.getSettings().setAllowFileAccess(true);
-        webView.getSettings().setAllowFileAccessFromFileURLs(true);
-        webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
-        webView.getSettings().setMediaPlaybackRequiresUserGesture(false); //for audio messages
+        mWebView.getSettings().setJavaScriptEnabled(true); //for wa web
+        mWebView.getSettings().setAllowContentAccess(true); // for camera
+        mWebView.getSettings().setAllowFileAccess(true);
+        mWebView.getSettings().setAllowFileAccessFromFileURLs(true);
+        mWebView.getSettings().setAllowUniversalAccessFromFileURLs(true);
+        mWebView.getSettings().setMediaPlaybackRequiresUserGesture(false); //for audio messages
 
-        webView.getSettings().setDomStorageEnabled(true); //for html5 app
-        webView.getSettings().setDatabaseEnabled(true);
-        webView.getSettings().setAppCacheEnabled(false); // deprecated
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        mWebView.getSettings().setDomStorageEnabled(true); //for html5 app
+        mWebView.getSettings().setDatabaseEnabled(true);
+        mWebView.getSettings().setAppCacheEnabled(false); // deprecated
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
 
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setUseWideViewPort(true);
+        mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setUseWideViewPort(true);
 
-        webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setDisplayZoomControls(false);
+        mWebView.getSettings().setSupportZoom(true);
+        mWebView.getSettings().setBuiltInZoomControls(true);
+        mWebView.getSettings().setDisplayZoomControls(false);
 
-        webView.getSettings().setSaveFormData(true);
-        webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setBlockNetworkImage(false);
-        webView.getSettings().setBlockNetworkLoads(false);
-        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        webView.getSettings().setNeedInitialFocus(false);
-        webView.getSettings().setGeolocationEnabled(true);
-        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        mWebView.getSettings().setSaveFormData(true);
+        mWebView.getSettings().setLoadsImagesAutomatically(true);
+        mWebView.getSettings().setBlockNetworkImage(false);
+        mWebView.getSettings().setBlockNetworkLoads(false);
+        mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        mWebView.getSettings().setNeedInitialFocus(false);
+        mWebView.getSettings().setGeolocationEnabled(true);
+        mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
-        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        webView.setScrollbarFadingEnabled(true);
+        mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        mWebView.setScrollbarFadingEnabled(true);
 
-        webView.setWebChromeClient(new WebChromeClient() {
+        mWebView.setWebChromeClient(new WebChromeClient() {
 
             @Override
             public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
@@ -162,13 +162,13 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                     if (ContextCompat.checkSelfPermission(activity, CAMERA_PERMISSION) == PackageManager.PERMISSION_DENIED
                             && ContextCompat.checkSelfPermission(activity, AUDIO_PERMISSION) == PackageManager.PERMISSION_DENIED) {
                         ActivityCompat.requestPermissions(activity, VIDEO_PERMISSION, VIDEO_PERMISSION_RESULTCODE);
-                        currentPermissionRequest = request;
+                        mCurrentPermissionRequest = request;
                     } else if (ContextCompat.checkSelfPermission(activity, CAMERA_PERMISSION) == PackageManager.PERMISSION_DENIED) {
                         ActivityCompat.requestPermissions(activity, new String[]{CAMERA_PERMISSION}, CAMERA_PERMISSION_RESULTCODE);
-                        currentPermissionRequest = request;
+                        mCurrentPermissionRequest = request;
                     } else if (ContextCompat.checkSelfPermission(activity, AUDIO_PERMISSION) == PackageManager.PERMISSION_DENIED) {
                         ActivityCompat.requestPermissions(activity, new String[]{AUDIO_PERMISSION}, AUDIO_PERMISSION_RESULTCODE);
-                        currentPermissionRequest = request;
+                        mCurrentPermissionRequest = request;
                     } else {
                         request.grant(request.getResources());
                     }
@@ -177,7 +177,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                         request.grant(request.getResources());
                     } else {
                         ActivityCompat.requestPermissions(activity, new String[]{AUDIO_PERMISSION}, AUDIO_PERMISSION_RESULTCODE);
-                        currentPermissionRequest = request;
+                        mCurrentPermissionRequest = request;
                     }
                 } else {
                     try {
@@ -201,7 +201,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             }
         });
 
-        webView.setWebViewClient(new WebViewClient() {
+        mWebView.setWebViewClient(new WebViewClient() {
 
             public void onPageFinished(WebView view, String url) {
                 view.scrollTo(0, 0);
@@ -239,18 +239,18 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             Log.d(DEBUG_TAG, "savedInstanceState is present");
         }
 
-        webView.getSettings().setUserAgentString(userAgent);
+        mWebView.getSettings().setUserAgentString(USER_AGENT);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        webView.onResume();
+        mWebView.onResume();
 
-        keyboardEnabled = prefs.getBoolean("keyboardEnabled", true);
-        setNavbarEnabled(prefs.getBoolean("navbarEnabled", true));
+        mKeyboardEnabled = mSharedPrefs.getBoolean("keyboardEnabled", true);
+        setNavbarEnabled(mSharedPrefs.getBoolean("navbarEnabled", true));
 
-        setKeyboardEnabled(keyboardEnabled);
+        setKeyboardEnabled(mKeyboardEnabled);
 
         showIntroInfo();
         showVersionInfo();
@@ -259,7 +259,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     @Override
     protected void onPause() {
         super.onPause();
-        webView.onPause();
+        mWebView.onPause();
     }
 
     @Override
@@ -277,11 +277,11 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 break;
             case R.id.scroll_left:
                 showToast("scroll left");
-                runOnUiThread(() -> webView.scrollTo(0, 0));
+                runOnUiThread(() -> mWebView.scrollTo(0, 0));
                 break;
             case R.id.scroll_right:
                 showToast("scroll right");
-                runOnUiThread(() -> webView.scrollTo(2000, 0));
+                runOnUiThread(() -> mWebView.scrollTo(2000, 0));
                 break;
         }
         return true;
@@ -295,13 +295,13 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 if (permissions.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     try {
-                        currentPermissionRequest.grant(currentPermissionRequest.getResources());
+                        mCurrentPermissionRequest.grant(mCurrentPermissionRequest.getResources());
                     } catch (RuntimeException e) {
                         Log.e(DEBUG_TAG, "Granting permissions failed", e);
                     }
                 } else {
                     showSnackbar("Permission not granted, can't use video.");
-                    currentPermissionRequest.deny();
+                    mCurrentPermissionRequest.deny();
                 }
                 break;
             case CAMERA_PERMISSION_RESULTCODE:
@@ -309,14 +309,14 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 //same same
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     try {
-                        currentPermissionRequest.grant(currentPermissionRequest.getResources());
+                        mCurrentPermissionRequest.grant(mCurrentPermissionRequest.getResources());
                     } catch (RuntimeException e) {
                         Log.e(DEBUG_TAG, "Granting permissions failed", e);
                     }
                 } else {
                     showSnackbar("Permission not granted, can't use " +
                             (requestCode == CAMERA_PERMISSION_RESULTCODE ? "camera" : "microphone"));
-                    currentPermissionRequest.deny();
+                    mCurrentPermissionRequest.deny();
                 }
                 break;
             case STORAGE_PERMISSION_RESULTCODE:
@@ -330,19 +330,19 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 Log.d(DEBUG_TAG, "Got permission result with unknown request code " +
                         requestCode + " - " + Arrays.asList(permissions).toString());
         }
-        currentPermissionRequest = null;
+        mCurrentPermissionRequest = null;
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        webView.saveState(outState);
+        mWebView.saveState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        webView.restoreState(savedInstanceState);
+        mWebView.restoreState(savedInstanceState);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -395,23 +395,22 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     }
 
     private void toggleKeyboard() {
-        setKeyboardEnabled(!keyboardEnabled);
+        setKeyboardEnabled(!mKeyboardEnabled);
     }
 
     private void setKeyboardEnabled(final boolean enable) {
-        keyboardEnabled = enable;
+        mKeyboardEnabled = enable;
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        if (enable && mainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
-            mainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        if (enable && mMainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
+            mMainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
             showSnackbar("Unblocking keyboard...");
             //inputMethodManager.showSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
         } else if (!enable) {
-            mainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-            webView.getRootView().requestFocus();
+            mMainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+            mWebView.getRootView().requestFocus();
             showSnackbar("Blocking keyboard...");
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
-        prefs.edit().putBoolean("keyboardEnabled", enable).apply();
     }
 
     private void toggleNavbarEnabled() {
@@ -424,6 +423,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private boolean isNavbarEnabled() {
         ActionBar navbar = getSupportActionBar();
         return (navbar != null) && (navbar.isShowing());
+        mSharedPrefs.edit().putBoolean("keyboardEnabled", enable).apply();
     }
 
     private void setNavbarEnabled(boolean enable) {
@@ -434,7 +434,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             } else {
                 navbar.hide();
             }
-            prefs.edit().putBoolean("navbarEnabled", enable).apply();
+            mSharedPrefs.edit().putBoolean("navbarEnabled", enable).apply();
         }
     }
 
@@ -448,9 +448,9 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             Log.e(DEBUG_TAG, "Error checking versioncode", e);
             return;
         }
-        lastShownVersionCode = prefs.getInt("lastShownVersionCode", 0);
+        lastShownVersionCode = mSharedPrefs.getInt("lastShownVersionCode", 0);
         if (lastShownVersionCode == 0) {
-            prefs.edit().putInt("lastShownVersionCode", currentVersionCode).apply();
+            mSharedPrefs.edit().putInt("lastShownVersionCode", currentVersionCode).apply();
             return;
         }
         if (lastShownVersionCode < currentVersionCode) {
@@ -458,16 +458,16 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         } else {
             return;
         }
-        prefs.edit().putInt("lastShownVersionCode", currentVersionCode).apply();
+        mSharedPrefs.edit().putInt("lastShownVersionCode", currentVersionCode).apply();
     }
 
     private void showIntroInfo() {
-        if (!prefs.getBoolean("introShown", false)) {
+        if (!mSharedPrefs.getBoolean("introShown", false)) {
             showPopupDialog(R.string.introInfo);
         } else {
             return;
         }
-        prefs.edit().putBoolean("introShown", true).apply();
+        mSharedPrefs.edit().putBoolean("introShown", true).apply();
     }
 
     private void showAbout() {
@@ -480,18 +480,18 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (System.currentTimeMillis() - lastBackClick < 1100) {
+        } else if (System.currentTimeMillis() - mLastBackClick < 1100) {
             finishAffinity();
         } else {
-            webView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ESCAPE));
+            mWebView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ESCAPE));
             showToast("Click back again to close");
-            lastBackClick = System.currentTimeMillis();
+            mLastBackClick = System.currentTimeMillis();
         }
     }
 
     private void loadWhatsapp() {
-        webView.getSettings().setUserAgentString(userAgent);
-        webView.loadUrl(WHATSAPP_WEB_URL);
+        mWebView.getSettings().setUserAgentString(USER_AGENT);
+        mWebView.loadUrl(WHATSAPP_WEB_URL);
     }
 
     @Override
@@ -509,7 +509,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             }
         } else if (id == R.id.nav_logout) {
             showSnackbar("logging out...");
-            webView.loadUrl("javascript:localStorage.clear()");
+            mWebView.loadUrl("javascript:localStorage.clear()");
             WebStorage.getInstance().deleteAllData();
             loadWhatsapp();
         } else if (id == R.id.nav_new) {
