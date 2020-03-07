@@ -19,12 +19,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {
-            url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2'
-        }
-        flatDir {
-            dirs 'libs'
-        }
     }
 }
 
