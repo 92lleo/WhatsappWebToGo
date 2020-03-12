@@ -1,0 +1,5 @@
+* Remove all xwalk references to prepare fdroid release
+* Fix opening links in external browser
+* Support pinch to zoom (Closes #13 and #3)
+* Fix keyboard setting memory
+* Update user-agent to latest chrome version

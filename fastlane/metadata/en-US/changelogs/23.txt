@@ -1,0 +1,3 @@
+* Bring back all features that were removed when fixing blank screen bug
+* Keyboard is now unblocked by default
+* Back button will trigger to close picture/video view

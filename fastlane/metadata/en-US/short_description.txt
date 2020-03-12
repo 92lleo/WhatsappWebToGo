@@ -1,0 +1,1 @@
+This app lets you access WhatsApp Web on your mobile phone or tablet. It has full support for sending audio and pictures / video.

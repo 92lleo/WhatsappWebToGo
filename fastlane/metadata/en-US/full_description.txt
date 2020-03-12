@@ -1,0 +1,8 @@
+Mobile Client for WhatsappWeb
+This app lets you access WhatsApp Web on your mobile phone or tablet. It has full support for sending audio and pictures / video.
+
+-free and without ads-
+
+If you have problems just send a mail or create a github issue
+
+This app is in no way affiliated with WhatsApp Inc. The rights for WhatsApp and WhatsApp Web belong to WhatsApp Inc. This app is a private project to enable the use of WhatsApp Web on Android Devices
