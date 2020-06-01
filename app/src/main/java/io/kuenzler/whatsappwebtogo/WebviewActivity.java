@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -82,6 +83,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private long mLastBackClick = 0;
 
     boolean mKeyboardEnabled = false;
+    boolean mDarkMode;
 
     private ValueCallback<Uri[]> mUploadMessage;
     private PermissionRequest mCurrentPermissionRequest;
@@ -106,6 +108,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         mSharedPrefs = this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
+        mDarkMode = mSharedPrefs.getBoolean("darkMode", false);
 
         mMainView = findViewById(R.id.layout);
 
@@ -199,8 +202,19 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
         mWebView.setWebViewClient(new WebViewClient() {
 
+            public void onPageStarted(WebView webView, String url, Bitmap favicon) {
+                if (mDarkMode) {
+                    addDarkMode(webView);
+                }
+            }
+
+            @Override
             public void onPageFinished(WebView view, String url) {
                 view.scrollTo(0, 0);
+
+                if (mDarkMode) {
+                    addDarkMode(view);
+                }
             }
 
             @Override
@@ -423,6 +437,14 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         }
     }
 
+    private void toggleDarkMode() {
+        boolean currentState = mSharedPrefs.getBoolean("darkMode", false);
+        mSharedPrefs.edit().putBoolean("darkMode", !currentState).apply();
+
+        Log.d(DEBUG_TAG, "Dark Mode Enabled: " + !currentState);
+        restartApp();
+    }
+
     private void showVersionInfo() {
         int lastShownVersionCode = 0;
         int currentVersionCode = 0;
@@ -479,6 +501,22 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         mWebView.loadUrl(WHATSAPP_WEB_URL);
     }
 
+    public void addDarkMode(final WebView mWebView) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(Color.BLACK);
+        }
+
+        mWebView.loadUrl("javascript:(" +
+                "function(){ " +
+                "try {  document.body.classList.add('dark') } catch(err) { }" +
+                "})()");
+    }
+
+    private void restartApp() {
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        this.finish();
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -508,6 +546,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         } else if (id == R.id.nav_reload) {
             showSnackbar("reloading...");
             loadWhatsapp();
+        } else if (id == R.id.nav_dark_mode) {
+            toggleDarkMode();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

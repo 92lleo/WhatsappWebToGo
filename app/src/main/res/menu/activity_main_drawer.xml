@@ -29,6 +29,10 @@
             android:icon="@android:drawable/ic_menu_more"
             android:title="(un)hide Navbar" />
         <item
+            android:id="@+id/nav_dark_mode"
+            android:icon="@drawable/baseline_brightness_2_white_24"
+            android:title="Toogle Dark Mode" />
+        <item
             android:id="@+id/nav_about"
             android:icon="@android:drawable/ic_dialog_info"
             android:title="About" />
