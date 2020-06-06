@@ -15,6 +15,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -34,6 +37,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -376,21 +380,20 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     }
 
     private void showPopupDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message)
+        final SpannableString msg = new SpannableString(message);
+        Linkify.addLinks(msg, Linkify.WEB_URLS|Linkify.EMAIL_ADDRESSES);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(msg)
                 .setCancelable(false)
                 .setPositiveButton("Ok", null);
         AlertDialog alert = builder.create();
         alert.show();
+        ((TextView) alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    private void showPopupDialog(int id) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(id)
-                .setCancelable(false)
-                .setPositiveButton("Ok", null);
-        AlertDialog alert = builder.create();
-        alert.show();
+    private void showPopupDialog(int resId) {
+       showPopupDialog(getString(resId));
     }
 
     private void showToast(String msg) {
