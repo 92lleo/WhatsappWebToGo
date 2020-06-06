@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -504,6 +505,9 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     public void addDarkMode(final WebView mWebView) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(Color.BLACK);
+            getWindow().setStatusBarColor(Color.BLACK);
+            try{ getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+            } catch (NullPointerException ignored) {}
         }
 
         mWebView.loadUrl("javascript:(" +
