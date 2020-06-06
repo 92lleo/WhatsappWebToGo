@@ -207,14 +207,24 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
         mWebView.setWebViewClient(new WebViewClient() {
 
-            public void onPageStarted(WebView webView, String url, Bitmap favicon) {
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
                 if (mDarkMode) {
-                    addDarkMode(webView);
+                    addDarkMode(view);
+                }
+            }
+
+            @Override
+            public void onPageCommitVisible(WebView view, String url) {
+                super.onPageCommitVisible(view, url);
+                if (mDarkMode) {
+                    addDarkMode(view);
                 }
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
                 view.scrollTo(0, 0);
 
                 if (mDarkMode) {
