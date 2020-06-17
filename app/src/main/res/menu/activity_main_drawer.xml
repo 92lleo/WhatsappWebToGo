@@ -25,9 +25,9 @@
             android:title="Switch Session"
             android:visible="false" />
         <item
-            android:id="@+id/nav_hide"
+            android:id="@+id/appbar_hide"
             android:icon="@android:drawable/ic_menu_more"
-            android:title="(un)hide Navbar" />
+            android:title="Toggle Appbar Visibility" />
         <item
             android:id="@+id/nav_dark_mode"
             android:icon="@drawable/baseline_brightness_2_white_24"

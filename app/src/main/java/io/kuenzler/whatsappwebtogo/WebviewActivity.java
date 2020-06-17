@@ -273,7 +273,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         mWebView.onResume();
 
         mKeyboardEnabled = mSharedPrefs.getBoolean("keyboardEnabled", true);
-        setNavbarEnabled(mSharedPrefs.getBoolean("navbarEnabled", true));
+        setAppbarEnabled(mSharedPrefs.getBoolean("appbarEnabled", true));
 
         setKeyboardEnabled(mKeyboardEnabled);
 
@@ -439,15 +439,15 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         mSharedPrefs.edit().putBoolean("keyboardEnabled", enable).apply();
     }
 
-    private void setNavbarEnabled(boolean enable) {
-        ActionBar navbar = getSupportActionBar();
-        if (navbar != null) {
+    private void setAppbarEnabled(boolean enable) {
+        ActionBar actionBar= getSupportActionBar();
+        if (actionBar != null) {
             if (enable) {
-                navbar.show();
+                actionBar.show();
             } else {
-                navbar.hide();
+                actionBar.hide();
             }
-            mSharedPrefs.edit().putBoolean("navbarEnabled", enable).apply();
+            mSharedPrefs.edit().putBoolean("appbarEnabled", enable).apply();
         }
     }
 
@@ -539,13 +539,13 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_hide) {
-            MenuItem view = findViewById(R.id.nav_hide);
+        if (id == R.id.appbar_hide) {
+            MenuItem view = findViewById(R.id.appbar_hide);
             if (getSupportActionBar().isShowing()) {
                 showSnackbar("hiding... swipe right to show navigation bar");
-                getSupportActionBar().hide();
+                setAppbarEnabled(false);
             } else {
-                getSupportActionBar().show();
+                setAppbarEnabled(true);
             }
         } else if (id == R.id.nav_logout) {
             showSnackbar("logging out...");
