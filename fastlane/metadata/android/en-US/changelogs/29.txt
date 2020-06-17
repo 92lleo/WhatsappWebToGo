@@ -1,0 +1,3 @@
+* Fix Appbar visibility setting
+* Make links and mail clickable in about tab
+* Add experimental dark mode (thanks to @marcomariani094)
