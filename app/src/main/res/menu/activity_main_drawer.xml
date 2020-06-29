@@ -31,7 +31,7 @@
         <item
             android:id="@+id/nav_dark_mode"
             android:icon="@drawable/baseline_brightness_2_white_24"
-            android:title="Toogle Dark Mode" />
+            android:title="Toggle Dark Mode" />
         <item
             android:id="@+id/nav_about"
             android:icon="@android:drawable/ic_dialog_info"
