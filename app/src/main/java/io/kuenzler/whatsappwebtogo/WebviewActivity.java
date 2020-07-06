@@ -475,7 +475,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             return;
         }
         if (lastShownVersionCode < currentVersionCode) {
-            showPopupDialog(R.string.versionInfo);
+            showPopupDialog(R.string.versionInfoText);
         } else {
             return;
         }
@@ -484,7 +484,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     private void showIntroInfo() {
         if (!mSharedPrefs.getBoolean("introShown", false)) {
-            showPopupDialog(R.string.introInfo);
+            showPopupDialog(R.string.introInfoText);
         } else {
             return;
         }
@@ -492,7 +492,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     }
 
     private void showAbout() {
-        showPopupDialog(R.string.about);
+        showPopupDialog(R.string.aboutText);
     }
 
     @Override

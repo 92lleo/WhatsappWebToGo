@@ -7,46 +7,46 @@
         <item
             android:id="@+id/nav_logout"
             android:icon="@android:drawable/ic_menu_close_clear_cancel"
-            android:title="Logout" />
+            android:title="@string/sidebar_button_logout" />
         <item
             android:id="@+id/nav_reload"
             android:icon="@android:drawable/stat_notify_sync"
-            android:title="Reload" />
+            android:title="@string/sidebar_button_reload" />
         <item
             android:id="@+id/nav_new"
             android:enabled="false"
             android:icon="@android:drawable/ic_menu_add"
-            android:title="New Session"
+            android:title="@string/sidebar_button_new_session"
             android:visible="false" />
         <item
             android:id="@+id/nav_switch"
             android:enabled="false"
             android:icon="@android:drawable/ic_menu_more"
-            android:title="Switch Session"
+            android:title="@string/sidebar_button_switch_session"
             android:visible="false" />
         <item
             android:id="@+id/appbar_hide"
             android:icon="@android:drawable/ic_menu_more"
-            android:title="Toggle Appbar Visibility" />
+            android:title="@string/sidebar_button_toggle_appbar_visibility" />
         <item
             android:id="@+id/nav_dark_mode"
             android:icon="@drawable/baseline_brightness_2_white_24"
-            android:title="Toggle Dark Mode" />
+            android:title="@string/sidebar_button_toggle_dark_mode" />
         <item
             android:id="@+id/nav_about"
             android:icon="@android:drawable/ic_dialog_info"
-            android:title="About" />
+            android:title="@string/sidebar_button_about" />
 
     </group>
 
 
-    <item android:title="Settings">
+    <item android:title="@string/sidebar_title_settings">
         <menu>
             <item
                 android:id="@+id/nav_settings"
                 android:enabled="false"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="Settings"
+                android:title="@string/sidebar_button_settings"
                 android:visible="false" />
         </menu>
     </item>
