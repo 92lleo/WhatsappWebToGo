@@ -1,0 +1,3 @@
+* Fix strings and de translation
+* Fix url validation (thanks to @luchua-bc)
+* Fix typo for dark mode toggle (thanks to @gbraad)
