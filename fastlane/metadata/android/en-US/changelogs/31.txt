@@ -1,0 +1,1 @@
+* Handle waweb redirect to whatsapp homepage
