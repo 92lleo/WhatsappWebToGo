@@ -6,35 +6,35 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_logout"
-            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            android:icon="@drawable/ic_logout"
             android:title="@string/sidebar_button_logout" />
         <item
             android:id="@+id/nav_reload"
-            android:icon="@android:drawable/stat_notify_sync"
+            android:icon="@drawable/ic_reload"
             android:title="@string/sidebar_button_reload" />
         <item
             android:id="@+id/nav_new"
             android:enabled="false"
-            android:icon="@android:drawable/ic_menu_add"
+            android:icon="@drawable/ic_add"
             android:title="@string/sidebar_button_new_session"
             android:visible="false" />
         <item
             android:id="@+id/nav_switch"
             android:enabled="false"
-            android:icon="@android:drawable/ic_menu_more"
+            android:icon="@drawable/ic_switch"
             android:title="@string/sidebar_button_switch_session"
             android:visible="false" />
         <item
             android:id="@+id/appbar_hide"
-            android:icon="@android:drawable/ic_menu_more"
+            android:icon="@drawable/ic_app_bar"
             android:title="@string/sidebar_button_toggle_appbar_visibility" />
         <item
             android:id="@+id/nav_dark_mode"
-            android:icon="@drawable/baseline_brightness_2_white_24"
+            android:icon="@drawable/ic_dark_mode"
             android:title="@string/sidebar_button_toggle_dark_mode" />
         <item
             android:id="@+id/nav_about"
-            android:icon="@android:drawable/ic_dialog_info"
+            android:icon="@drawable/ic_about"
             android:title="@string/sidebar_button_about" />
 
     </group>
