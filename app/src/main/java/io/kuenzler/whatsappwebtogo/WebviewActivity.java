@@ -468,7 +468,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         mSharedPrefs.edit().putBoolean("darkMode", !currentState).apply();
 
         Log.d(DEBUG_TAG, "Dark Mode Enabled: " + !currentState);
-        restartApp();
+        recreate();
     }
 
     private void showVersionInfo() {
@@ -539,11 +539,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 "function(){ " +
                 "try {  document.body.classList.add('dark') } catch(err) { }" +
                 "})()");
-    }
-
-    private void restartApp() {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-        this.finish();
     }
 
     @Override
