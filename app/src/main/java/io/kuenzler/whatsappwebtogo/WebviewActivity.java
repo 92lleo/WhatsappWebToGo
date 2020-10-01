@@ -552,7 +552,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         int id = item.getItemId();
 
         if (id == R.id.appbar_hide) {
-            MenuItem view = findViewById(R.id.appbar_hide);
             if (getSupportActionBar().isShowing()) {
                 showSnackbar("hiding... swipe right to show navigation bar");
                 setAppbarEnabled(false);
