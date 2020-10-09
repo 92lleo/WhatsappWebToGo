@@ -1,0 +1,3 @@
+* Fix crash when hiding appbar (thanks to @Domi04151309)
+* Add new menu items (thanks to @Domi04151309)
+* Stop reloading when screen size changes
