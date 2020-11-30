@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">WhatsApp Web To Go</string>
-    <string name="appversion_semantic" translatable="false">1.6.3</string>
-
+    
     <string name="versionInfoText">Obrigado por atualizar!\nNovidades em versão 1.6.3:\n&#8211;Fix crash when hiding appbar (thanks to @Domi04151309)\n&#8211;Add new menu items (thanks to @Domi04151309)\n&#8211;Stop reloading when screen size changes</string>
     <string name="introInfoText">Obrigado por instalar!\nBasta conectar seu telefone do mesmo jeito que você faria no seu computador.\nPara bloquear ou desbloquear o teclado, use o botão no canto superior direito da tela. Suas configurações serão salvas.</string>
     <string name="aboutText">WhatsappWeb To Go\n\nby Leonhard Künzler\nBasetwo GbR\nandroid@kuenzler.io\n\ngithub.com/92lleo/WhatsappWebToGo\n\n© 2017&#8211;2020\n\nv1.6.3\n\nEste aplicativo não tem nenhuma afiliação com WhatsApp Inc. Os direitos de WhatsApp e WhatsApp Web pertencem a WhatsApp Inc. Este aplicativo é um projeto privado desenvolvido com o fim de facilitar o uso de WhatsApp Web em Dispositivos de Android</string>
