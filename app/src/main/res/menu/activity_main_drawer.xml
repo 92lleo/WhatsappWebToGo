@@ -29,6 +29,10 @@
             android:icon="@drawable/ic_app_bar"
             android:title="@string/sidebar_button_toggle_appbar_visibility" />
         <item
+            android:id="@+id/nav_keyboard"
+            android:icon="@drawable/ic_toggle_keyboard"
+            android:title="@string/appbar_button_toggle_keyboard" />
+        <item
             android:id="@+id/nav_dark_mode"
             android:icon="@drawable/ic_dark_mode"
             android:title="@string/sidebar_button_toggle_dark_mode" />

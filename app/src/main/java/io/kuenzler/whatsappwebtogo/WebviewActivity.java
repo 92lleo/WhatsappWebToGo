@@ -571,6 +571,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             loadWhatsapp();
         } else if (id == R.id.nav_dark_mode) {
             toggleDarkMode();
+        } else if (id == R.id.nav_keyboard) {
+            toggleKeyboard();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

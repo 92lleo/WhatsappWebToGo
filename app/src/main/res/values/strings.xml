@@ -19,5 +19,5 @@
     <string name="sidebar_button_settings">@string/sidebar_title_settings</string>
     <string name="appbar_button_scroll_left">Scroll left</string>
     <string name="appbar_title_scroll_right">Scroll right</string>
-    <string name="appbar_button_toggle_keyboard">Toggle keyboard</string>
+    <string name="appbar_button_toggle_keyboard">Toggle Keyboard</string>
 </resources>
