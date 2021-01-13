@@ -1,0 +1,4 @@
+* Add "Toggle Keyboard" option to NavigationDrawer
+* Add pt-br translation (thanks to @mezysinc)
+* Shrink image sizes (thanks to @TPS)
+* Internal Cleanup (thanks to @Domi04151309)
