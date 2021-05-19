@@ -286,6 +286,14 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         }
 
         mWebView.getSettings().setUserAgentString(USER_AGENT);
+        
+          ///Checking and requesting permission at runtime
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkPermission()) {
+            } else {
+                requestPermission(); // Code for permission
+            }
+        }
     }
 
     @Override
@@ -588,4 +596,23 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    
+      //WE use this to get check permission at runtime
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(WebviewActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void requestPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(WebviewActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(WebviewActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        }
+
+
+    }
+    ///Ends here//
 }
