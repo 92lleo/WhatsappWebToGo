@@ -597,7 +597,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         return true;
     }
     
-      //WE use this to get check permission at runtime
+      //WE use this to check permission at runtime
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(WebviewActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (result == PackageManager.PERMISSION_GRANTED) {
