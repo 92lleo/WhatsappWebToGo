@@ -123,6 +123,14 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         // webview stuff
 
         mWebView = findViewById(R.id.webview);
+        
+         mWebView.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long contentLength) {
+                mWebView.loadUrl(BlobConverter.getBase64StringFromBlobUrl(url));
+            }
+        });
+        mWebView.addJavascriptInterface(new BlobConverter(getApplicationContext()), "Android");
 
         mWebView.getSettings().setJavaScriptEnabled(true); //for wa web
         mWebView.getSettings().setAllowContentAccess(true); // for camera
