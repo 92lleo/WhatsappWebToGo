@@ -609,7 +609,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     private void requestPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(WebviewActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            ActivityCompat.requestPermissions(WebviewActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(WebviewActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_RESULTCODE);
         }
 
 
