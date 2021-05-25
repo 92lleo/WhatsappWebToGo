@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Base64;
@@ -97,11 +98,11 @@ public class BlobDownloader {
             String CHANNEL_ID = "Downloads";
             final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_LOW);
                 Notification notification = new Notification.Builder(context, CHANNEL_ID)
-                        .setContentText("Saved as " + dlFileName)
-                        .setContentTitle("Tap to open")
+                        .setContentText(String.format(context.getString(R.string.notification_text_saved_as), dlFileName))
+                        .setContentTitle(context.getString(R.string.notification_title_tap_to_open))
                         .setContentIntent(pendingIntent)
                         .setChannelId(CHANNEL_ID)
                         .setSmallIcon(android.R.drawable.stat_notify_chat)
@@ -114,7 +115,7 @@ public class BlobDownloader {
                 NotificationCompat.Builder b = new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setWhen(System.currentTimeMillis())
-                        .setSmallIcon(android.R.drawable.sym_action_chat)
+                        .setSmallIcon(android.R.drawable.stat_notify_chat)
                         .setContentIntent(pendingIntent)
                         .setContentTitle("Saved as " + dlFileName)
                         .setContentText("Tap to open");
@@ -131,6 +132,6 @@ public class BlobDownloader {
                 }
             }
         }
-        Toast.makeText(context, "Saved to downloads folder", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.toast_saved_to_downloads_folder, Toast.LENGTH_SHORT).show();
     }
 }
