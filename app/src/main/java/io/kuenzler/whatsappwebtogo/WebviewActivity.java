@@ -131,7 +131,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 mWebView.loadUrl(BlobConverter.getBase64StringFromBlobUrl(url));
             }
         });
-        mWebView.addJavascriptInterface(new BlobConverter(getApplicationContext()), "Android");
+        mWebView.addJavascriptInterface(new BlobConverter(getApplicationContext()), BlobConverter.JsInstance);
 
         mWebView.getSettings().setJavaScriptEnabled(true); //for wa web
         mWebView.getSettings().setAllowContentAccess(true); // for camera
