@@ -354,6 +354,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case VIDEO_PERMISSION_RESULTCODE:
                 if (permissions.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&

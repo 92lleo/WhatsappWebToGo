@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Base64;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
@@ -63,20 +64,11 @@ public class BlobDownloader {
     private void convertBase64StringToFileAndStoreIt(String base64File) throws IOException {
         final int notificationId = 1;
         final String[] strings = base64File.split(",");
-        Toast.makeText(context, base64File.toString(), Toast.LENGTH_LONG).show();
-        for(String s : strings){
-            Toast.makeText(context, s, Toast.LENGTH_LONG).show();
-        }
-        String extension = null;
 
-        extension = MimeTypes.lookupExt(strings[0]);
-        if (null == extension){
-            if (strings.length > 0) {
-                extension = strings[0];
-                extension = "." + extension.substring(extension.indexOf('/') + 1, extension.indexOf(';'));
-            } else {
-                extension = ".file";
-            }
+        String extension = MimeTypes.lookupExt(strings[0]);
+        if (null == extension) {
+            extension = strings[0];
+            extension = "." + extension.substring(extension.indexOf('/') + 1, extension.indexOf(';'));
         }
 
         @SuppressLint("SimpleDateFormat") //SDF is just fine for filename
@@ -89,48 +81,42 @@ public class BlobDownloader {
         os.flush();
 
         if (dlFilePath.exists()) {
-            Intent intent = new Intent();
+            final Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
-            Uri apkURI = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", dlFilePath);
+            final Uri apkURI = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", dlFilePath);
             intent.setDataAndType(apkURI, MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-            String CHANNEL_ID = "Downloads";
-            final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            final PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            final String notificationChannelId = "Downloads";
 
+            final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (null == notificationManager) {
+                return;
+            }
+
+            Notification notification;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "name", NotificationManager.IMPORTANCE_LOW);
-                Notification notification = new Notification.Builder(context, CHANNEL_ID)
+                NotificationChannel notificationChannel = new NotificationChannel(notificationChannelId, "name", NotificationManager.IMPORTANCE_LOW);
+                notification = new Notification.Builder(context, notificationChannelId)
                         .setContentText(String.format(context.getString(R.string.notification_text_saved_as), dlFileName))
                         .setContentTitle(context.getString(R.string.notification_title_tap_to_open))
                         .setContentIntent(pendingIntent)
-                        .setChannelId(CHANNEL_ID)
+                        .setChannelId(notificationChannelId)
                         .setSmallIcon(android.R.drawable.stat_notify_chat)
                         .build();
-                if (notificationManager != null) {
-                    notificationManager.createNotificationChannel(notificationChannel);
-                    notificationManager.notify(notificationId, notification);
-                }
+                notificationManager.createNotificationChannel(notificationChannel);
             } else {
-                NotificationCompat.Builder b = new NotificationCompat.Builder(context, CHANNEL_ID)
+                notification = new NotificationCompat.Builder(context, notificationChannelId)
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setWhen(System.currentTimeMillis())
                         .setSmallIcon(android.R.drawable.stat_notify_chat)
                         .setContentIntent(pendingIntent)
                         .setContentTitle(String.format(context.getString(R.string.notification_text_saved_as), dlFileName))
-                        .setContentText(context.getString(R.string.notification_title_tap_to_open));
-                if (notificationManager != null) {
-                    notificationManager.notify(notificationId, b.build());
-                    Handler h = new Handler();
-                    long delayInMilliseconds = 1000;
-                    h.postDelayed(new Runnable() {
-                        public void run() {
-                            notificationManager.cancel(notificationId);
-                        }
-                    }, delayInMilliseconds);
-                }
+                        .setContentText(context.getString(R.string.notification_title_tap_to_open))
+                        .build();
             }
+            notificationManager.notify(notificationId, notification);
+            Toast.makeText(context, R.string.toast_saved_to_downloads_folder, Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(context, R.string.toast_saved_to_downloads_folder, Toast.LENGTH_SHORT).show();
     }
 }
