@@ -62,8 +62,9 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private static final String CHROME_FULL = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36";
     private static final String USER_AGENT = CHROME_FULL;
 
-    private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA";
-    private static final String AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO; // "android.permission.RECORD_AUDIO";
+    private static final String STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE; // "android.permission.WRITE_EXTERNAL_STORAGE"
+    private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA"
+    private static final String AUDIO_PERMISSION = Manifest.permission.RECORD_AUDIO; // "android.permission.RECORD_AUDIO"
     private static final String[] VIDEO_PERMISSION = {CAMERA_PERMISSION, AUDIO_PERMISSION};
 
     private static final String WHATSAPP_HOMEPAGE_URL = "https://www.whatsapp.com/";
@@ -96,6 +97,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     private ValueCallback<Uri[]> mUploadMessage;
     private PermissionRequest mCurrentPermissionRequest;
+    private String mCurrentDownloadRequest = null;
 
 
     @Override
@@ -124,11 +126,17 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         // webview stuff
 
         mWebView = findViewById(R.id.webview);
-        
-         mWebView.setDownloadListener(new DownloadListener() {
+
+        mWebView.setDownloadListener(new DownloadListener() {
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long contentLength) {
-                mWebView.loadUrl(BlobConverter.getBase64StringFromBlobUrl(url));
+                mCurrentDownloadRequest = url;
+                if(checkPermission(STORAGE_PERMISSION)) {
+                    mWebView.loadUrl(BlobConverter.getBase64StringFromBlobUrl(url));
+                    triggerDownload();
+                } else {
+                    requestPermission(STORAGE_PERMISSION);
+                }
             }
         });
         mWebView.addJavascriptInterface(new BlobConverter(getApplicationContext()), BlobConverter.JsInstance);
@@ -286,14 +294,6 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         }
 
         mWebView.getSettings().setUserAgentString(USER_AGENT);
-        
-          ///Checking and requesting permission at runtime
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkPermission()) {
-            } else {
-                requestPermission(); // Code for permission
-            }
-        }
     }
 
     @Override
@@ -341,6 +341,16 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         return true;
     }
 
+    private boolean checkPermission(String permission) {
+        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(activity, permission);
+    }
+
+    private void requestPermission(String permission) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+            ActivityCompat.requestPermissions(activity, new String[]{permission}, STORAGE_PERMISSION_RESULTCODE);
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -375,9 +385,10 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 break;
             case STORAGE_PERMISSION_RESULTCODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // TODO: check for current download and enqueue it
+                    triggerDownload();
                 } else {
-                    showSnackbar("Permission not granted, can't download to storage");
+                    showToast("Permission not granted, can't download");
+                    mCurrentDownloadRequest = null;
                 }
                 break;
             default:
@@ -385,6 +396,13 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                         requestCode + " - " + Arrays.asList(permissions).toString());
         }
         mCurrentPermissionRequest = null;
+    }
+
+    private void triggerDownload(){
+        if(null != mCurrentDownloadRequest) {
+            mWebView.loadUrl(BlobConverter.getBase64StringFromBlobUrl(mCurrentDownloadRequest));
+        }
+        mCurrentDownloadRequest = null;
     }
 
     @Override
@@ -596,23 +614,5 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    
-      //WE use this to check permission at runtime
-    private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(WebviewActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
-    private void requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(WebviewActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            ActivityCompat.requestPermissions(WebviewActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_RESULTCODE);
-        }
-
-
-    }
-    ///Ends here//
 }
