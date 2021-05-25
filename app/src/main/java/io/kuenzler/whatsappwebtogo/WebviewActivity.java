@@ -132,14 +132,14 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long contentLength) {
                 mCurrentDownloadRequest = url;
                 if(checkPermission(STORAGE_PERMISSION)) {
-                    mWebView.loadUrl(BlobConverter.getBase64StringFromBlobUrl(url));
+                    mWebView.loadUrl(BlobDownloader.getBase64StringFromBlobUrl(url));
                     triggerDownload();
                 } else {
                     requestPermission(STORAGE_PERMISSION);
                 }
             }
         });
-        mWebView.addJavascriptInterface(new BlobConverter(getApplicationContext()), BlobConverter.JsInstance);
+        mWebView.addJavascriptInterface(new BlobDownloader(getApplicationContext()), BlobDownloader.JsInstance);
 
         mWebView.getSettings().setJavaScriptEnabled(true); //for wa web
         mWebView.getSettings().setAllowContentAccess(true); // for camera
@@ -400,7 +400,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     private void triggerDownload(){
         if(null != mCurrentDownloadRequest) {
-            mWebView.loadUrl(BlobConverter.getBase64StringFromBlobUrl(mCurrentDownloadRequest));
+            mWebView.loadUrl(BlobDownloader.getBase64StringFromBlobUrl(mCurrentDownloadRequest));
         }
         mCurrentDownloadRequest = null;
     }
