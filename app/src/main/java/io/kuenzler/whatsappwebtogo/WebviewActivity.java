@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
+import android.webkit.DownloadListener;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -123,6 +124,14 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         // webview stuff
 
         mWebView = findViewById(R.id.webview);
+        
+         mWebView.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long contentLength) {
+                mWebView.loadUrl(BlobConverter.getBase64StringFromBlobUrl(url));
+            }
+        });
+        mWebView.addJavascriptInterface(new BlobConverter(getApplicationContext()), "Android");
 
         mWebView.getSettings().setJavaScriptEnabled(true); //for wa web
         mWebView.getSettings().setAllowContentAccess(true); // for camera
@@ -277,6 +286,14 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         }
 
         mWebView.getSettings().setUserAgentString(USER_AGENT);
+        
+          ///Checking and requesting permission at runtime
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkPermission()) {
+            } else {
+                requestPermission(); // Code for permission
+            }
+        }
     }
 
     @Override
@@ -579,4 +596,23 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    
+      //WE use this to check permission at runtime
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(WebviewActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void requestPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(WebviewActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(WebviewActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_RESULTCODE);
+        }
+
+
+    }
+    ///Ends here//
 }
