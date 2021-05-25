@@ -117,9 +117,8 @@ public class BlobDownloader {
                         .setWhen(System.currentTimeMillis())
                         .setSmallIcon(android.R.drawable.stat_notify_chat)
                         .setContentIntent(pendingIntent)
-                        .setContentTitle("Saved as " + dlFileName)
-                        .setContentText("Tap to open");
-
+                        .setContentTitle(String.format(context.getString(R.string.notification_text_saved_as), dlFileName))
+                        .setContentText(context.getString(R.string.notification_title_tap_to_open));
                 if (notificationManager != null) {
                     notificationManager.notify(notificationId, b.build());
                     Handler h = new Handler();
