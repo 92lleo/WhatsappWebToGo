@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -31,13 +30,30 @@ public class BlobDownloader {
 
     public final static String JsInstance = "Downloader";
 
+    private static String lastDownloadBlob = "";
+    private static long lastDownloadTime = 0;
+    private final long sameFileDownloadTimeout = 100;
+
     public BlobDownloader(Context context) {
         this.context = context;
     }
 
     @JavascriptInterface
     public void getBase64FromBlobData(String base64Data) throws IOException {
-        convertBase64StringToFileAndStoreIt(base64Data);
+        Log.d(WebviewActivity.DEBUG_TAG,"Download triggered "+ System.currentTimeMillis());
+        lastDownloadTime = System.currentTimeMillis();
+
+        if(System.currentTimeMillis() - lastDownloadTime < sameFileDownloadTimeout){
+            Log.d(WebviewActivity.DEBUG_TAG,"Download within sameFileDownloadTimeout");
+
+            if (lastDownloadBlob.equals(base64Data)) {
+                Log.d(WebviewActivity.DEBUG_TAG,"Blobs match, ignoring download");
+            } else {
+                Log.d(WebviewActivity.DEBUG_TAG,"Blobs do not match, downloading");
+                lastDownloadBlob = base64Data;
+                convertBase64StringToFileAndStoreIt(base64Data);
+            }
+        }
     }
 
     public static String getBase64StringFromBlobUrl(String blobUrl) {
@@ -62,7 +78,7 @@ public class BlobDownloader {
     }
 
     private void convertBase64StringToFileAndStoreIt(String base64File) throws IOException {
-        final int notificationId = 1;
+        final int notificationId =  (int) System.currentTimeMillis();
         final String[] strings = base64File.split(",");
 
         String extension = MimeTypes.lookupExt(strings[0]);
@@ -86,7 +102,8 @@ public class BlobDownloader {
             final Uri apkURI = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", dlFilePath);
             intent.setDataAndType(apkURI, MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            final PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            final PendingIntent pendingIntent = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
             final String notificationChannelId = "Downloads";
 
             final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -108,7 +125,6 @@ public class BlobDownloader {
             } else {
                 notification = new NotificationCompat.Builder(context, notificationChannelId)
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
-                        .setWhen(System.currentTimeMillis())
                         .setSmallIcon(android.R.drawable.stat_notify_chat)
                         .setContentIntent(pendingIntent)
                         .setContentTitle(String.format(context.getString(R.string.notification_text_saved_as), dlFileName))

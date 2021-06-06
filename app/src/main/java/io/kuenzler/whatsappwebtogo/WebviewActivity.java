@@ -81,7 +81,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     private static final int VIDEO_PERMISSION_RESULTCODE   = 203;
     private static final int STORAGE_PERMISSION_RESULTCODE = 204;
 
-    private static final String DEBUG_TAG = "WAWEBTOGO";
+    public static final String DEBUG_TAG = "WAWEBTOGO";
 
     private final Activity activity = this;
 
