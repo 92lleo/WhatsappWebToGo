@@ -1,0 +1,2 @@
+* Add file/media download possiblilty (thanks to @firebrain12)
+* Update dependencies
