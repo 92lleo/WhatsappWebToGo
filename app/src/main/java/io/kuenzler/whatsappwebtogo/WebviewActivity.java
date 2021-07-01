@@ -229,6 +229,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
+                setContentSize(view);
                 if (mDarkMode) {
                     addDarkMode(view);
                 }
@@ -237,6 +238,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             @Override
             public void onPageCommitVisible(WebView view, String url) {
                 super.onPageCommitVisible(view, url);
+                setContentSize(view);
                 if (mDarkMode) {
                     addDarkMode(view);
                 }
@@ -247,6 +249,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 super.onPageFinished(view, url);
                 view.scrollTo(0, 0);
 
+                setContentSize(view);
                 if (mDarkMode) {
                     addDarkMode(view);
                 }
@@ -574,6 +577,24 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         mWebView.loadUrl("javascript:(" +
                 "function(){ " +
                 "try {  document.body.classList.add('dark') } catch(err) { }" +
+                "})()");
+    }
+
+    public void setContentSize(final WebView mWebView){
+        //ToDo: Scroll to the right. See `focusChatTextInput(e)-Method of bootstrap_qr.e002978cf4688a3eaf75.js:formatted  line 67087
+        mWebView.loadUrl("javascript:(function(){" +
+                "  try { " +
+                "	var css = '.two > div:nth-child(4){flex: 1 0 100vmin;}.two{overflow:visible}'," +
+                "    	head = document.head || document.getElementsByTagName('head')[0]," +
+                "    	style = document.createElement('style');" +
+                "	head.appendChild(style);" +
+                "	style.type = 'text/css';" +
+                "	if (style.styleSheet){" +
+                "  		style.styleSheet.cssText = css;" +
+                "	} else {" +
+                "  		style.appendChild(document.createTextNode(css));" +
+                "	}" +
+                "} catch(err) { }" +
                 "})()");
     }
 
