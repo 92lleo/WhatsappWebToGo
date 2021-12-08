@@ -84,12 +84,12 @@ public class BlobDownloader {
         String extension = MimeTypes.lookupExt(strings[0]);
         if (null == extension) {
             extension = strings[0];
-            extension = "." + extension.substring(extension.indexOf('/') + 1, extension.indexOf(';'));
+            extension = extension.substring(extension.indexOf('/') + 1, extension.indexOf(';'));
         }
 
         @SuppressLint("SimpleDateFormat") //SDF is just fine for filename
         final String currentDateTime = new SimpleDateFormat("yyyyMMdd-hhmmss").format(new Date());
-        final String dlFileName = "WAWTG_" + currentDateTime + extension;
+        final String dlFileName = "WAWTG_" + currentDateTime + "." + extension;
         final File dlFilePath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + dlFileName);
         final byte[] fileAsBytes = Base64.decode(base64File.replaceFirst(strings[0], ""), 0);
         final FileOutputStream os = new FileOutputStream(dlFilePath, false);

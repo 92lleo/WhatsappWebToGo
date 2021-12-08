@@ -489,6 +489,12 @@ public class MimeTypes {
      * Simply returns Ext or <code>null</code> if no Mimetype is found.
      */
     public static String lookupExt(String mimeType) {
+        if (mimeType.endsWith(";base64")){
+            mimeType = mimeType.substring(0, mimeType.indexOf(";base64"));
+        }
+        if (mimeType.startsWith("data:")){
+            mimeType = mimeType.substring(5);
+        }
         return extMapping.get(mimeType.toLowerCase());
     }
 
