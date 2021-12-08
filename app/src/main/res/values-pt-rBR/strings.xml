@@ -1,6 +1,4 @@
 <resources>
-    
-    <string name="versionInfoText">Obrigado por atualizar!\nNovidades em versão 1.6.4:\n&#8211;Add "Toggle Keyboard" option to NavigationDrawer\n&#8211;Add pt-br translation (thanks to @mezysinc)\n&#8211;Shrink image sizes (thanks to @TPS)\n&#8211;Internal cleanup (thanks to @Domi04151309)</string>
     <string name="introInfoText">Obrigado por instalar!\nBasta conectar seu telefone do mesmo jeito que você faria no seu computador.\nPara bloquear ou desbloquear o teclado, use o botão no canto superior direito da tela. Suas configurações serão salvas.</string>
 
     <string name="navigation_drawer_open">Abrir o menu de navegação</string>

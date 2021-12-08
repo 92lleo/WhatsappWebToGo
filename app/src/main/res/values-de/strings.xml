@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="versionInfoText">Update Erfolgreich!\nNeu in Version 1.6.4:\n&#8211;Add "Toggle Keyboard" option to NavigationDrawer\n&#8211;Add pt-br translation (thanks to @mezysinc)\n&#8211;Shrink image sizes (thanks to @TPS)\n&#8211;Internal cleanup (thanks to @Domi04151309)</string>
     <string name="introInfoText">Vielen Dank für die Installation!\nVerbinden sie Ihr Smartphone wie sie Ihren Computer verbinden würden.\nUm die Tastatur zu Sperren und Entsperren, nutzen sie den Tastatur-Button oben rechts. Ihre Einstellungen werden gespeichert.</string>
 
     <string name="navigation_drawer_open">Navigation Drawer öffnen</string>

@@ -1,0 +1,2 @@
+* Fix download extension matcher
+* Make chat size fit phone screen (thanks @benehmb)
