@@ -581,6 +581,13 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     }
 
     public void setContentSize(final WebView mWebView){
+        if (getResources().getBoolean(R.bool.isTablet)) {
+            // only change content sizes if device has a smaller screen than normally used for
+            // whatsapp web
+            // see https://stackoverflow.com/questions/9279111/determine-if-the-device-is-a-smartphone-or-tablet
+            return;
+        }
+
         //ToDo: Scroll to the right. See `focusChatTextInput(e)-Method of bootstrap_qr.e002978cf4688a3eaf75.js:formatted  line 67087
         mWebView.loadUrl("javascript:(function(){" +
                 "  try { " +
