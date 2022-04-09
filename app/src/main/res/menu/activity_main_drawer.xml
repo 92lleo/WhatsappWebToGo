@@ -5,10 +5,6 @@
 
     <group android:checkableBehavior="none">
         <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_logout"
-            android:title="@string/sidebar_button_logout" />
-        <item
             android:id="@+id/nav_reload"
             android:icon="@drawable/ic_reload"
             android:title="@string/sidebar_button_reload" />
@@ -37,10 +33,13 @@
             android:icon="@drawable/ic_dark_mode"
             android:title="@string/sidebar_button_toggle_dark_mode" />
         <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/sidebar_button_logout" />
+        <item
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_about"
             android:title="@string/sidebar_button_about" />
-
     </group>
 
 
