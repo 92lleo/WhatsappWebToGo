@@ -605,6 +605,21 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 "})()");
     }
 
+    public void logout(){
+        new AlertDialog.Builder(this)
+                .setTitle("Do you want to log out?")
+                .setMessage("When logging out, you will need to scan the QR code again with your phone to connect Whatsapp Web.")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    showSnackbar("logging out...");
+                    mWebView.loadUrl("javascript:localStorage.clear()");
+                    WebStorage.getInstance().deleteAllData();
+                    loadWhatsapp();
+                    dialog.dismiss();
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -618,10 +633,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 setAppbarEnabled(true);
             }
         } else if (id == R.id.nav_logout) {
-            showSnackbar("logging out...");
-            mWebView.loadUrl("javascript:localStorage.clear()");
-            WebStorage.getInstance().deleteAllData();
-            loadWhatsapp();
+           logout();
         } else if (id == R.id.nav_new) {
             //showToast("nav_new");
         } else if (id == R.id.nav_switch) {
