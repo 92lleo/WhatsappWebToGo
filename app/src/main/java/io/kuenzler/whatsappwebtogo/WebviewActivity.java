@@ -50,12 +50,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.webkit.WebSettingsCompat;
+import androidx.webkit.WebViewFeature;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 
 public class WebviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -567,17 +570,22 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
     }
 
     public void addDarkMode(final WebView mWebView) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(Color.BLACK);
-            getWindow().setStatusBarColor(Color.BLACK);
-            try{ getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-            } catch (NullPointerException ignored) {}
-        }
+        getWindow().setNavigationBarColor(Color.BLACK);
+        getWindow().setStatusBarColor(Color.BLACK);
 
-        mWebView.loadUrl("javascript:(" +
-                "function(){ " +
-                "try {  document.body.classList.add('dark') } catch(err) { }" +
-                "})()");
+        Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            WebSettingsCompat.setForceDark(mWebView.getSettings(), WebSettingsCompat.FORCE_DARK_ON);
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK_STRATEGY)) {
+                WebSettingsCompat.setForceDarkStrategy(mWebView.getSettings(), WebSettingsCompat.DARK_STRATEGY_PREFER_WEB_THEME_OVER_USER_AGENT_DARKENING);
+            }
+        } else {
+            mWebView.loadUrl("javascript:(" +
+                    "function(){ " +
+                    "try {  document.body.classList.add('dark') } catch(err) { }" +
+                    "})()");
+        }
     }
 
     public void setContentSize(final WebView mWebView){
