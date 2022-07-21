@@ -588,21 +588,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             return;
         }
 
-        //ToDo: Scroll to the right. See `focusChatTextInput(e)-Method of bootstrap_qr.e002978cf4688a3eaf75.js:formatted  line 67087
-        mWebView.loadUrl("javascript:(function(){" +
-                "  try { " +
-                "	var css = '.two > div:nth-child(4){flex: 1 0 100vmin;}.two{overflow:visible}'," +
-                "    	head = document.head || document.getElementsByTagName('head')[0]," +
-                "    	style = document.createElement('style');" +
-                "	head.appendChild(style);" +
-                "	style.type = 'text/css';" +
-                "	if (style.styleSheet){" +
-                "  		style.styleSheet.cssText = css;" +
-                "	} else {" +
-                "  		style.appendChild(document.createTextNode(css));" +
-                "	}" +
-                "} catch(err) { }" +
-                "})()");
+        //ToDo: Go back to chat list when back button of phone is pressed
+        mWebView.loadUrl("javascript:(function () { try { var css = ` .two > div:nth-child(2){ display: block; } .two { display: block; } @media screen and (max-width: 748px){ .two, .three { min-width: auto !important; } } [data-testid='drawer-left'], [data-testid='drawer-middle'], [data-testid='drawer-right'] { width: 100vw !important; left: 0 !important; } `, head = document.head || document.getElementsByTagName('head')[0], style = document.createElement('style'); head.appendChild(style); if (style.styleSheet) { style.styleSheet.cssText = css; } else { style.appendChild(document.createTextNode(css)); } } catch (error) {} document.getElementsByTagName('body')[0].addEventListener( 'click', function (e) { let paneSide = e.target.closest('#pane-side') || e.target.classList.contains('two'); let main = e.target.closest('#main .back-btn'); let statusList = e.target.getAttribute('data-testid')?.includes('status'); if (paneSide) { let main = document.getElementById('main').parentNode; main.style.display = 'block'; let side = document.getElementById('side').parentNode; side.style.display = 'none'; try { let backBtn = document.querySelector('.back-btn'); if (!backBtn) { let header = document.querySelector('#main > header'); header.insertAdjacentHTML( 'afterbegin', `<span class='back-btn' style='padding-right:1rem'> <svg viewBox='0 0 24 24' width='24' height='24' class=''><path fill='currentColor' d='m12 4 1.4 1.4L7.8 11H20v2H7.8l5.6 5.6L12 20l-8-8 8-8z'></path></svg> </span>` ); } } catch (error) {} } else if (main) { let main = document.getElementById('main').parentNode; main.style.display = 'none'; let side = document.getElementById('side').parentNode; side.style.display = 'block'; } else if (statusList) { document.querySelector('.statusList').parentElement.parentElement.style.width = '100vw'; document.querySelector('.statusList').parentElement.parentElement.nextSibling.remove(); } }, false ); })()");
     }
 
     public void logout(){
