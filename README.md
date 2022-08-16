@@ -1,4 +1,4 @@
-# WhatsappWebToGo
+# WhatsApp Web To Go
 
 Mobile Client for WhatsApp Web.
 

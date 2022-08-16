@@ -1,7 +1,7 @@
-<i>Whatsapp Web To Go</i> memperbolehkan Anda mengakses WhatsApp Web di perangkat ponsel atau tablet. Aplikasi ini mempunyai dukungan penuh untuk mengirim gambar, audio, dan video - dengan tampilan yang bersih dan mudah.
+<i>WhatsApp Web To Go</i> memperbolehkan Anda mengakses WhatsApp Web di perangkat ponsel atau tablet. Aplikasi ini mempunyai dukungan penuh untuk mengirim gambar, audio, dan video - dengan tampilan yang bersih dan mudah.
 
 -gratis/bebas dan tanpa iklan-
 
 Jika Anda mempunyai masalah, tinggal kirim surel atau buat sebuah isu di GitHub.
 
-Aplikasi ini tidak terafiliasi sama sekali dengan WhatsApp Inc. Hak untuk WhatsApp dan WhatsApp Web dimiliki oleh WhatsApp Inc. Aplikasi ini adalah proyek pribadi untuk memperbolehkan penggunaan WhatsApp Web di perangkat Android
+Aplikasi ini tidak terafiliasi sama sekali dengan WhatsApp Inc. Hak untuk WhatsApp dan WhatsApp Web dimiliki oleh WhatsApp Inc. Aplikasi ini adalah proyek pribadi untuk memperbolehkan penggunaan WhatsApp Web di perangkat Android.
