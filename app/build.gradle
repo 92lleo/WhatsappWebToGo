@@ -6,8 +6,8 @@ android {
         applicationId "io.kuenzler.whatsappwebtogo"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 36
-        versionName "1.7.2"
+        versionCode 37
+        versionName "1.7.3"
     }
     buildTypes {
         debug {

@@ -1,0 +1,6 @@
+* Use built-in tools for darkmode if supported
+* Fix punctuation, capitalization, app name, spelling (thanks @MicaelJarniac)
+* Add Indonesian Localization (thanks @the7thNightmare)
+* Add safety popup for logout action
+* Reorder hamburger menu
+* Fix view broken on tablets
