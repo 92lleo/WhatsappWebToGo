@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="introInfoText">Bedankt voor het installeren. Verbind je telefoon op dezelfde manier als dat je op een computer zou doen. Om het toetsenbord te schakelen gebruik de toetsenbord-knop rechts boven. De instellingen worden opgeslagen.</string>
+    <string name="navigation_drawer_open">Open navigatie menu</string>
+    <string name="navigation_drawer_close">Sluit navigatie menu</string>
+    <string name="sidebar_button_logout">Uitloggen</string>
+    <string name="sidebar_button_reload">Herladen</string>
+    <string name="sidebar_button_new_session">Nieuwe Sessie</string>
+    <string name="sidebar_button_switch_session">Sessie Wisselen</string>
+    <string name="sidebar_button_toggle_appbar_visibility">Zichtbaarheid van de Appbar aanpassen</string>
+    <string name="sidebar_button_toggle_dark_mode">Donkere modus schakelen</string>
+    <string name="sidebar_button_about">Over</string>
+    <string name="sidebar_title_settings">Instellingen</string>
+    <string name="sidebar_button_settings">\@string/sidebar_title_settings</string>
+    <string name="appbar_button_scroll_left">Naar links scrollen</string>
+    <string name="appbar_title_scroll_right">Naar rechts scrollen</string>
+    <string name="appbar_button_toggle_keyboard">Toetsenbord schakelen</string>
+    <string name="toast_saved_to_downloads_folder">Opgeslagen in de Downloads map</string>
+    <string name="notification_title_tap_to_open">Klik om te openen</string>
+    <string name="notification_text_saved_as">Opgeslagen als %s</string>
+    <string name="navigation_drawer_close_confirm">Klik nog een keer op terug om te sluiten</string>
+    <string name="reload_required">WA Web moet herladen worden om de app werkend te houden</string>
+    <string name="permission_denied_download">Toestemming afgewezen, niet in staat om te downloaden</string>
+    <string name="unblock_keyboard">Toetsenbord ontgrendelen...</string>
+    <string name="dismiss">afwijzen</string>
+    <string name="block_keyboard">Toetsenbord vergrendelen...</string>
+    <string name="logging_out">Uitloggen...</string>
+    <string name="logout_title">Wil je uitloggen?</string>
+    <string name="logout_message">Als je uitlogd zal je opnieuw de QR code moeten scannen met je telefoon om met Whatsapp Web te verbinden.</string>
+    <string name="yes_button">Ja</string>
+    <string name="no_button">Nee</string>
+    <string name="appbar_hiding">verbergen... veeg naar rechts om de navigatie-balk te laten verschijnen</string>
+    <string name="reloading">herladen...</string>
+    <string name="ok_button">Oke</string>
+    <string name="permission_denied_cam">"Toestemming geweigerd, kan "</string>
+    <string name="camera">camera niet gebruiken.</string>
+    <string name="microphone">microfoon niet gebruiken.</string>
+    <string name="permission_denied_video">Toestemming geweigerd, kan video niet gebruiken.</string>
+</resources>

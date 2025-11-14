@@ -269,7 +269,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                     // WHATSAPP_HOMEPAGE_URL. It's higly unlikely that a user wants to visit the
                     // WHATSAPP_HOMEPAGE_URL from within waweb.
                     // -> block the request and reload waweb
-                    showToast("WA Web has to be reloaded to keep the app running");
+                    showToast(R.string.reload_required);
                     loadWhatsapp();
                     return true;
                 } else if (url.getHost().equals(WHATSAPP_WEB_BASE_URL)) {
@@ -336,11 +336,11 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 toggleKeyboard();
                 break;
             case R.id.scroll_left:
-                showToast("scroll left");
+                showToast(R.string.appbar_button_scroll_left);
                 runOnUiThread(() -> mWebView.scrollTo(0, 0));
                 break;
             case R.id.scroll_right:
-                showToast("scroll right");
+                showToast(R.string.appbar_title_scroll_right);
                 runOnUiThread(() -> mWebView.scrollTo(2000, 0));
                 break;
         }
@@ -371,7 +371,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                         Log.e(DEBUG_TAG, "Granting permissions failed", e);
                     }
                 } else {
-                    showSnackbar("Permission not granted, can't use video.");
+                    showSnackbar(R.string.permission_denied_video);
                     mCurrentPermissionRequest.deny();
                 }
                 break;
@@ -385,8 +385,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                         Log.e(DEBUG_TAG, "Granting permissions failed", e);
                     }
                 } else {
-                    showSnackbar("Permission not granted, can't use " +
-                            (requestCode == CAMERA_PERMISSION_RESULTCODE ? "camera" : "microphone"));
+                    showSnackbar(R.string.permission_denied_cam +
+                            (requestCode == CAMERA_PERMISSION_RESULTCODE ? R.string.camera : R.string.microphone));
                     mCurrentPermissionRequest.deny();
                 }
                 break;
@@ -394,7 +394,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     triggerDownload();
                 } else {
-                    showToast("Permission not granted, can't download");
+                    showToast(R.string.permission_denied_download);
                     mCurrentDownloadRequest = null;
                 }
                 break;
@@ -450,7 +450,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(msg)
                 .setCancelable(false)
-                .setPositiveButton("Ok", null);
+                .setPositiveButton(R.string.ok_button, null);
         AlertDialog alert = builder.create();
         alert.show();
         ((TextView) alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
@@ -460,14 +460,14 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
        showPopupDialog(getString(resId));
     }
 
-    private void showToast(String msg) {
-        this.runOnUiThread(() -> Toast.makeText(this, msg, Toast.LENGTH_LONG).show());
+    private void showToast(int resId) {
+        this.runOnUiThread(() -> Toast.makeText(this, getString(resId), Toast.LENGTH_LONG).show());
     }
 
-    private void showSnackbar(String msg) {
+    private void showSnackbar(int resId) {
         this.runOnUiThread(() -> {
-            final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), msg, 900);
-            snackbar.setAction("dismiss", (View view) -> snackbar.dismiss());
+            final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), getString(resId), 900);
+            snackbar.setAction(getString(R.string.dismiss), (View view) -> snackbar.dismiss());
             snackbar.setActionTextColor(Color.parseColor("#075E54"));
             snackbar.show();
         });
@@ -482,12 +482,12 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (enable && mMainView.getDescendantFocusability() == ViewGroup.FOCUS_BLOCK_DESCENDANTS) {
             mMainView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-            showSnackbar("Unblocking keyboard...");
+            showSnackbar(R.string.unblock_keyboard);
             //inputMethodManager.showSoftInputFromInputMethod(activity.getCurrentFocus().getWindowToken(), 0);
         } else if (!enable) {
             mMainView.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             mWebView.getRootView().requestFocus();
-            showSnackbar("Blocking keyboard...");
+            showSnackbar(R.string.block_keyboard);
             inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
         }
         mSharedPrefs.edit().putBoolean("keyboardEnabled", enable).apply();
@@ -559,7 +559,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             finishAffinity();
         } else {
             mWebView.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ESCAPE));
-            showToast("Click back again to close");
+            showToast(R.string.navigation_drawer_close_confirm);
             mLastBackClick = System.currentTimeMillis();
         }
     }
@@ -615,16 +615,16 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
     public void logout(){
         new AlertDialog.Builder(this)
-                .setTitle("Do you want to log out?")
-                .setMessage("When logging out, you will need to scan the QR code again with your phone to connect Whatsapp Web.")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    showSnackbar("logging out...");
+                .setTitle(R.string.logout_title)
+                .setMessage(R.string.logout_message)
+                .setPositiveButton(R.string.yes_button, (dialog, which) -> {
+                    showSnackbar(R.string.logging_out);
                     mWebView.loadUrl("javascript:localStorage.clear()");
                     WebStorage.getInstance().deleteAllData();
                     loadWhatsapp();
                     dialog.dismiss();
                 })
-                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(R.string.no_button, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
@@ -635,7 +635,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
         if (id == R.id.appbar_hide) {
             if (getSupportActionBar().isShowing()) {
-                showSnackbar("hiding... swipe right to show navigation bar");
+                showSnackbar(R.string.appbar_hiding);
                 setAppbarEnabled(false);
             } else {
                 setAppbarEnabled(true);
@@ -651,7 +651,7 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
         } else if (id == R.id.nav_about) {
             showAbout();
         } else if (id == R.id.nav_reload) {
-            showSnackbar("reloading...");
+            showSnackbar(R.string.reloading);
             loadWhatsapp();
         } else if (id == R.id.nav_dark_mode) {
             toggleDarkMode();
