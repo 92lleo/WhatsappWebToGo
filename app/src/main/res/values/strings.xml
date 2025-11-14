@@ -23,4 +23,22 @@
     <string name="toast_saved_to_downloads_folder">Saved to downloads folder</string>
     <string name="notification_title_tap_to_open">Tap to open</string>
     <string name="notification_text_saved_as">Saved as %s</string>
+    <string name="navigation_drawer_close_confirm">Click back again to close</string>
+    <string name="reload_required">WA Web has to be reloaded to keep the app running</string>
+    <string name="permission_denied_download">Permission not granted, can\'t download</string>
+    <string name="unblock_keyboard">Unblocking keyboard...</string>
+    <string name="dismiss">dismiss</string>
+    <string name="block_keyboard">Blocking keyboard...</string>
+    <string name="logging_out">logging out...</string>
+    <string name="logout_title">Do you want to log out?</string>
+    <string name="logout_message">When logging out, you will need to scan the QR code again with your phone to connect Whatsapp Web.</string>
+    <string name="yes_button">Yes</string>
+    <string name="no_button">No</string>
+    <string name="appbar_hiding">hiding... swipe right to show navigation bar</string>
+    <string name="reloading">reloading...</string>
+    <string name="ok_button">Ok</string>
+    <string name="permission_denied_cam">Permission not granted, can\'t use</string>
+    <string name="camera">camera</string>
+    <string name="microphone">microphone</string>
+    <string name="permission_denied_video">Permission not granted, can\'t use video.</string>
 </resources>
