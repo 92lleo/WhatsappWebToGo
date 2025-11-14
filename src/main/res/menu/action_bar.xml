@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/scroll_left"
+        android:enabled="false"
+        android:icon="@drawable/ic_scroll_left"
+        android:orderInCategory="100"
+        android:title="@string/appbar_button_scroll_left"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/scroll_right"
+        android:enabled="false"
+        android:icon="@drawable/ic_scroll_right"
+        android:orderInCategory="100"
+        android:title="@string/appbar_title_scroll_right"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/toggle_keyboard"
+        android:icon="@drawable/ic_toggle_keyboard"
+        android:orderInCategory="100"
+        android:title="@string/appbar_button_toggle_keyboard"
+        android:visible="true"
+        app:showAsAction="always" />
+</menu>

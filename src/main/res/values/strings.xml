@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name" translatable="false">WhatsApp Web To Go</string>
+    <string name="appversion_semantic" translatable="false">1.7.3</string>
+    <string name="versionInfoText" translatable="false">Thanks for updating!\nNew in version 1.7.3:\n&#8211;Use built-in tools for darkmode if supported\n&#8211;Fix punctuation, capitalization, app name, spelling (thanks @MicaelJarniac)\n&#8211;Add Indonesian Localization (thanks @the7thNightmare)\n&#8211;Add safety popup for logout action\n&#8211;Reorder hamburger menu\n&#8211;Fix view broken on tablets</string>
+
+    <string name="introInfoText">Thanks for installing!\nJust connect your phone as you would on your computer.\nTo lock and unlock the keyboard, use the keyboard button top right. Your settings will be saved.</string>
+    <string name="aboutText" translatable="false">WhatsApp Web To Go\n\nby Leonhard Künzler\nandroid@kuenzler.io\n\ngithub.com/92lleo/WhatsappWebToGo\n\n© 2017&#8211;2022\n\nv1.7.3\n\nThis app is in no way affiliated with WhatsApp Inc. The rights for WhatsApp and WhatsApp Web belong to WhatsApp Inc. This app is a private project to enable the use of WhatsApp Web on Android devices.</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="sidebar_button_logout">Logout</string>
+    <string name="sidebar_button_reload">Reload</string>
+    <string name="sidebar_button_new_session">New Session</string>
+    <string name="sidebar_button_switch_session">Switch Session</string>
+    <string name="sidebar_button_toggle_appbar_visibility">Toggle Appbar Visibility</string>
+    <string name="sidebar_button_toggle_dark_mode">Toggle Dark Mode</string>
+    <string name="sidebar_button_about">About</string>
+    <string name="sidebar_title_settings">Settings</string>
+    <string name="sidebar_button_settings">@string/sidebar_title_settings</string>
+    <string name="appbar_button_scroll_left">Scroll left</string>
+    <string name="appbar_title_scroll_right">Scroll right</string>
+    <string name="appbar_button_toggle_keyboard">Toggle Keyboard</string>
+    <string name="toast_saved_to_downloads_folder">Saved to downloads folder</string>
+    <string name="notification_title_tap_to_open">Tap to open</string>
+    <string name="notification_text_saved_as">Saved as %s</string>
+    <string name="navigation_drawer_close_confirm">Click back again to close</string>
+    <string name="reload_required">WA Web has to be reloaded to keep the app running</string>
+    <string name="permission_denied_download">Permission not granted, can\'t download</string>
+    <string name="unblock_keyboard">Unblocking keyboard...</string>
+    <string name="dismiss">dismiss</string>
+    <string name="block_keyboard">Blocking keyboard...</string>
+    <string name="logging_out">logging out...</string>
+    <string name="logout_title">Do you want to log out?</string>
+    <string name="logout_message">When logging out, you will need to scan the QR code again with your phone to connect Whatsapp Web.</string>
+    <string name="yes_button">Yes</string>
+    <string name="no_button">No</string>
+    <string name="appbar_hiding">hiding... swipe right to show navigation bar</string>
+    <string name="reloading">reloading...</string>
+    <string name="ok_button">Ok</string>
+    <string name="permission_denied_cam">Permission not granted, can\'t use</string>
+    <string name="camera">camera</string>
+    <string name="microphone">microphone</string>
+    <string name="permission_denied_video">Permission not granted, can\'t use video.</string>
+</resources>
