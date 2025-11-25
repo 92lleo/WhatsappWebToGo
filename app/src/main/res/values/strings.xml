@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name" translatable="false">WhatsApp Web To Go</string>
-    <string name="appversion_semantic" translatable="false">1.7.3</string>
-    <string name="versionInfoText" translatable="false">Thanks for updating!\nNew in version 1.7.3:\n&#8211;Use built-in tools for darkmode if supported\n&#8211;Fix punctuation, capitalization, app name, spelling (thanks @MicaelJarniac)\n&#8211;Add Indonesian Localization (thanks @the7thNightmare)\n&#8211;Add safety popup for logout action\n&#8211;Reorder hamburger menu\n&#8211;Fix view broken on tablets</string>
+    <string name="appversion_semantic" translatable="false">1.7.5</string>
+    <string name="versionInfoText" translatable="false">Thanks for updating!\nNew in version 1.7.5:\n&#8211;Fix outdated useragent (dynamic creation)\n&#8211;add dutch tranlations (thanks @Japie3krekel)\n&#8211;add missing strings to translation files (thanks @Japie3krekel)</string>
 
     <string name="introInfoText">Thanks for installing!\nJust connect your phone as you would on your computer.\nTo lock and unlock the keyboard, use the keyboard button top right. Your settings will be saved.</string>
-    <string name="aboutText" translatable="false">WhatsApp Web To Go\n\nby Leonhard Künzler\nandroid@kuenzler.io\n\ngithub.com/92lleo/WhatsappWebToGo\n\n© 2017&#8211;2022\n\nv1.7.3\n\nThis app is in no way affiliated with WhatsApp Inc. The rights for WhatsApp and WhatsApp Web belong to WhatsApp Inc. This app is a private project to enable the use of WhatsApp Web on Android devices.</string>
+    <string name="aboutText" translatable="false">WhatsApp Web To Go\n\nby Leonhard Künzler\nandroid@kuenzler.io\n\ngithub.com/92lleo/WhatsappWebToGo\n\nBuy me a coffee: (app will always stay free)\npaypal.me/leokuenzler\n\n© 2017&#8211;2025\n\nv1.7.5\n\nThis app is in no way affiliated with WhatsApp Inc. The rights for WhatsApp and WhatsApp Web belong to WhatsApp Inc. This app is a private project to enable the use of WhatsApp Web on Android devices.</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

@@ -1,0 +1,3 @@
+* Fix outdated user agent (dynamic creation)
+* add duch translations (thanks @Japie3krekel)
+* add missing strings to translation files (thanks @Japie3krekel)
