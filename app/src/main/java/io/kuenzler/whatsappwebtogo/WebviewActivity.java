@@ -51,6 +51,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.webkit.WebSettingsCompat;
+import androidx.webkit.WebViewCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.google.android.material.navigation.NavigationView;
@@ -62,8 +63,9 @@ import java.util.Objects;
 
 public class WebviewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String FF_FULL = "Mozilla/5.0 (X11; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0";
-    private static final String USER_AGENT = FF_FULL;
+    private static final String CHROME_TEMPLATE = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36";
+    private static final String CHROME_VERSION_FALLBACK = "142.0.0.0";
+    private static String USER_AGENT = String.format(CHROME_TEMPLATE, CHROME_VERSION_FALLBACK);
 
     private static final String STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE; // "android.permission.WRITE_EXTERNAL_STORAGE"
     private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA; // "android.permission.CAMERA"
@@ -297,6 +299,13 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
             loadWhatsapp();
         } else {
             Log.d(DEBUG_TAG, "savedInstanceState is present");
+        }
+
+        // set version of local webview to user agent to avoid outdated agent
+        PackageInfo webviewPackageInfo = WebViewCompat.getCurrentWebViewPackage(getApplicationContext());
+        if (webviewPackageInfo != null) {
+            USER_AGENT = String.format(CHROME_TEMPLATE, webviewPackageInfo.versionName);
+            Log.d("test", "versionname: "+webviewPackageInfo.versionName+", ua: "+USER_AGENT);
         }
 
         mWebView.getSettings().setUserAgentString(USER_AGENT);
