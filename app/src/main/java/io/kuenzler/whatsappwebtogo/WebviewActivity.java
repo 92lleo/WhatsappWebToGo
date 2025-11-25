@@ -303,9 +303,8 @@ public class WebviewActivity extends AppCompatActivity implements NavigationView
 
         // set version of local webview to user agent to avoid outdated agent
         PackageInfo webviewPackageInfo = WebViewCompat.getCurrentWebViewPackage(getApplicationContext());
-        if (webviewPackageInfo != null) {
+        if (webviewPackageInfo != null && !webviewPackageInfo.versionName.isEmpty()) {
             USER_AGENT = String.format(CHROME_TEMPLATE, webviewPackageInfo.versionName);
-            Log.d("test", "versionname: "+webviewPackageInfo.versionName+", ua: "+USER_AGENT);
         }
 
         mWebView.getSettings().setUserAgentString(USER_AGENT);
